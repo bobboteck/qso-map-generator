@@ -1,0 +1,1 @@
+# qso-map-generator
