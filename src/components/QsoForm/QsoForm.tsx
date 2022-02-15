@@ -16,37 +16,48 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
         {
             DateQso: "",
             TimeQso: "",
-            CallSign: "",
+            Callsign: "",
             Locator: "",
             Band: "",
             Mode: "",
-            Frequency: ""
+            Frequency: "",
+            validated: false,
+            InvalidTimeMessage: ""
         };
     }
 
     public render(): React.ReactElement<IQsoFormProps>
     {
-        const { DateQso, TimeQso, CallSign, Locator, Band, Mode, Frequency } = this.state;
+        const { DateQso, TimeQso, Callsign, Locator, Band, Mode, Frequency, validated, InvalidTimeMessage } = this.state;
 
         return(
-            <Form>
+            <Form noValidate validated={validated} id="formQso" >
                 <Row className='mb-3'>
-                    <Form.Group as={Col} controlId="dateQso">
-                        <Form.Label>Date</Form.Label>
-                        <Form.Control type="text" className="input" value={DateQso} onChange={this._onChangeDate} placeholder="Date in format dd/mm/yyyy" />
+                    <Form.Group as={Col} md="4" controlId="dateQso">
+                        <Form.Label>Date *</Form.Label>
+                        <Form.Control type="date" className="input" value={DateQso} onChange={this._onChangeDate} placeholder="Date in format dd/mm/yyyy" required />
+                        <Form.Control.Feedback type="invalid">
+                            Date is required
+                        </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group as={Col} controlId="timeQso">
-                        <Form.Label>Time</Form.Label>
-                        <Form.Control type="text" className="input" value={TimeQso} onChange={this._onChangeTime} placeholder="Time in format hh:mm" />
+                    <Form.Group as={Col} md="4" controlId="timeQso">
+                        <Form.Label>Time *</Form.Label>
+                        <Form.Control type="time" className="input" value={TimeQso} onChange={this._onChangeTime} placeholder="Time in format hh:mm" required pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" />
+                        <Form.Control.Feedback type="invalid">
+                            Time is required
+                        </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group as={Col} controlId="callSignQso">
-                        <Form.Label>Call sign</Form.Label>
-                        <Form.Control type="text" className="input" value={CallSign} onChange={this._onChangeCallSign} placeholder="Call sign of station" />
+                    <Form.Group as={Col} md="4" controlId="callSignQso">
+                        <Form.Label>Callsign *</Form.Label>
+                        <Form.Control type="text" className="input" value={Callsign} onChange={this._onChangeCallsign} placeholder="Callsign of station" required />
+                        <Form.Control.Feedback type="invalid">
+                            Callsign is required
+                        </Form.Control.Feedback>
                     </Form.Group>
                 </Row>
 
                 <Row className='mb-3'>
-                    <Form.Group as={Col} controlId="bandQso">
+                    <Form.Group as={Col} md="4" controlId="bandQso">
                         <Form.Label>Band</Form.Label>
                         <Form.Select aria-label="Band used in QSO">
                             <option>Select the band</option>
@@ -55,11 +66,11 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                             <option value="70cm">70 cm</option>
                         </Form.Select>
                     </Form.Group>
-                    <Form.Group as={Col} controlId="frequencyQso">
+                    <Form.Group as={Col} md="4" controlId="frequencyQso">
                         <Form.Label>Frequency</Form.Label>
-                        <Form.Control type="text" className="input" value={Frequency} onChange={this._onChangeFrequency} placeholder="" />
+                        <Form.Control type="number" className="input" value={Frequency} onChange={this._onChangeFrequency} placeholder="" />
                     </Form.Group>
-                    <Form.Group as={Col} controlId="modeQso">
+                    <Form.Group as={Col} md="4" controlId="modeQso">
                         <Form.Label>Mode</Form.Label>
                         <Form.Select aria-label="Mode used in QSO" onChange={this._onChangeMode}>
                             <option>Select the mode</option>
@@ -71,21 +82,50 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 </Row>
                 
                 <Row className="mb-3">
-                    <Form.Group as={Col} controlId="LocatorQso">
+                    <Form.Group as={Col} md="4" controlId="locatorQso">
                         <Form.Label>Locator</Form.Label>
                         <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="Locator in format JN61aa" />
                     </Form.Group>
-                    <Form.Group as={Col} controlId="LatitudeQso">
+                    <Form.Group as={Col} md="4" controlId="latitudeQso">
                         <Form.Label>Latitude</Form.Label>
                         <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="" />
                     </Form.Group>
-                    <Form.Group as={Col} controlId="LongitudeQso">
+                    <Form.Group as={Col} md="4" controlId="longitudeQso">
                         <Form.Label>Longitude</Form.Label>
                         <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="" />
                     </Form.Group>
                 </Row>
 
-                <Button variant="primary mb-3" type="button" onClick={this._callBack}>Add</Button>
+                <Row className="mb-3">
+                    <Form.Group as={Col} md="3" controlId="rstrQso">
+                        <Form.Label>RST received</Form.Label>
+                        <Form.Control type="number" className="input" />
+                    </Form.Group>
+                    <Form.Group as={Col} md="3" controlId="rstsQso">
+                        <Form.Label>RST sent</Form.Label>
+                        <Form.Control type="number" className="input" />
+                    </Form.Group>
+                    <Form.Group as={Col} md="3" controlId="txPowerQso">
+                        <Form.Label>TX power</Form.Label>
+                        <Form.Control type="number" className="input" />
+                    </Form.Group>
+                    <Form.Group as={Col} md="3" controlId="rxPowerQso">
+                        <Form.Label>RX Power</Form.Label>
+                        <Form.Control type="number" className="input" />
+                    </Form.Group>
+                </Row>
+
+                <Row className="mb-3">
+                    <Form.Group as={Col} md="10" controlId="noteQso">
+                        <Form.Label>Note</Form.Label>
+                        <Form.Control type="text" className="input" />
+                    </Form.Group>
+                    <Form.Group as={Col} md="2" controlId="addQso">
+                        <Form.Label>&nbsp;</Form.Label>
+                        <Button variant="primary" type="button" className="AddButton" onClick={this._callBack}>Add</Button>
+                    </Form.Group>
+                </Row>
+                
             </Form>
         );
     }
@@ -100,9 +140,9 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
         this.setState({ TimeQso: e.target.value ? e.target.value : "" });
     }
 
-    private _onChangeCallSign = (e: React.ChangeEvent<HTMLInputElement>): void => 
+    private _onChangeCallsign = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        this.setState({ CallSign: e.target.value ? e.target.value : "" });
+        this.setState({ Callsign: e.target.value ? e.target.value : "" });
     }
 
     private _onChangeLocator = (e: React.ChangeEvent<HTMLInputElement>): void => 
@@ -121,22 +161,38 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
     }
 
 
-    private _callBack = (): void =>
+    private _callBack = (event: any): void =>
     {
-        const { DateQso, TimeQso, CallSign, Locator, Mode, Frequency } = this.state;
+        const { DateQso, TimeQso, Callsign, Locator, Mode, Frequency } = this.state;
+
+        const form = event.currentTarget.parentNode.parentNode.parentNode;
+
+        if (form.checkValidity() === false)
+        {
+            console.log("Non è valido: ", event);
+
+            this.setState({ InvalidTimeMessage: "Non è valido, perchè?" });
+
+          event.preventDefault();
+          event.stopPropagation();
+        }
+    
+        //setValidated(true);
+        this.setState({ validated: true });
+
 
         let data: IQsoData = 
         {
             Date: DateQso,
             Time: TimeQso,
-            CallSign: CallSign,
+            CallSign: Callsign,
             Locator: Locator,
             Band: "",
             Mode: Mode,
             Frequency: Frequency ? Number(Frequency) : undefined
         };
 
-        this.setState({ CallSign: "", Locator: "", Frequency: "" });
+        this.setState({ Callsign: "", Locator: "", Frequency: "" });
 
         this.props.callBack(data);
     }

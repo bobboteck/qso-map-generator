@@ -27,40 +27,64 @@ This is the latest version of data structure of JSON file.
 {
     "MapConfig":
     {
-        "Latitude": 42.479,
-        "Longitude": 12.958,
+        "Latitude": 42.1039,
+        "Longitude": 12.8667,
         "Zoom": 5
     },
-    "MyQTH": 
+    "QTH": 
     {
-        "Latitude": 42.479,
-        "Longitude": 12.958,
+        "Latitude": 42.1039,
+        "Longitude": 12.8667,
+        "Locator": "JN62kc",
         "isPortable": true,
-        "Location": "<b>Monte Elefante</b> 2015 m",
-        "Locator": "JN62ll",
+        "Location": "<b>Monte Pellecchia</b> 1368 m",
         "References": 
         [
             {
-                "Reference" : ""
+                "Code": "I/LZ-042",
+                "Type": "SOTA"
+            },
+            {
+                "Code": "I-0713",
+                "Type": "POTA"
+            }
+        ]
+    },
+    "Equipment":
+    {
+        "Radios":
+        [
+            {
+                "Brand": "Yaesu",
+                "Model": "FT-817",
+                "PowerSupply": "Lead acid 12V 7Ah"
+            }
+        ],
+        "Antennas":
+        [
+            {
+                "Brand": "Home made",
+                "Model": "folded dipole",
+                "Other": ""
             }
         ]
     },
     "QSOs":
     [
-		{
+        {
             "Call": "IU0PHY",
             "Latitude": 41.938,
             "Longitude": 12.542,
             "Locator": "JN61gw",
-            "QRB": 0,
+            "QRB": 33,
             "Band": "6m",
-            "Frequency": "",
+            "Frequency": "50145",
             "Mode": "SSB",
             "RSTr": 59,
             "RSTs": 59,
             "TxPower": 0.5,
             "RxPower": 0,
-            "UtcTime": "2007-05-20",
+            "UtcTime": "2022-02-13T10:43:00Z",
             "Note": ""
         }
     ]

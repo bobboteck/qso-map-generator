@@ -1,9 +1,9 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import './App.css';
 import { QsoForm } from './components/QsoForm/QsoForm';
 import { QsoList } from './components/QsoList/QsoList';
-import { SummitForm } from './components/SummitForm/SummitForm';
+import { SummitForm } from './components/QthForm/QthForm';
 import { IQsoData } from './entities/IQsoData';
 
 export interface IAppProps
@@ -31,20 +31,30 @@ export class App extends React.Component<IAppProps, IAppState>
 
     return(
       <Container>
-      <Row>
-        <Col>
-          <SummitForm></SummitForm>
-        </Col>
-        <Col>
-          <QsoForm callBack={this._onAddQso} />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <QsoList data={qsos} />
-        </Col>
-      </Row>
-    </Container>
+        <Tabs defaultActiveKey="map" id="uncontrolled-tab-example" className="mb-3">
+          <Tab eventKey="map" title="Map">
+            Map information and preview
+          </Tab>
+          <Tab eventKey="qth" title="QTH">
+            <SummitForm />
+          </Tab>
+          <Tab eventKey="equipment" title="Equipment">
+            Equipment
+          </Tab>
+          <Tab eventKey="qso" title="QSOs">
+            <Row>
+              <Col>
+                <QsoForm callBack={this._onAddQso} />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <QsoList data={qsos} />
+              </Col>
+            </Row>    
+          </Tab>
+        </Tabs>
+      </Container>
     );
   }
 

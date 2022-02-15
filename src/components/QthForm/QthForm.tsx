@@ -1,21 +1,24 @@
 import * as React from 'react';
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap';
-import { ISummitFormProps } from './ISummitFormProps';
-import { ISummitFormState } from './ISummitFormState';
+import { IQthFormProps } from './IQthFormProps';
+import { IQthFormState } from './IQthFormState';
 
-export class SummitForm extends React.Component<ISummitFormProps, ISummitFormState>
+export class SummitForm extends React.Component<IQthFormProps, IQthFormState>
 {
-    constructor(props: ISummitFormProps)
+    constructor(props: IQthFormProps)
     {
         super(props);
     }
 
-    public render(): React.ReactElement<ISummitFormProps>
+    public render(): React.ReactElement<IQthFormProps>
     {
         return(
             <Form>
                 <Row className="mb-3">
-                    <h4>Activation info</h4>
+                    <h4>QTH information</h4>
+                    <p>
+Insert the information and position of your station during the activity
+                    </p>
                 </Row>
                 <Row className="mb-3">
                     <Col md>
@@ -24,12 +27,12 @@ export class SummitForm extends React.Component<ISummitFormProps, ISummitFormSta
                         </FloatingLabel>
                     </Col>
                     <Col md>
-                        <FloatingLabel controlId="LatitudeSummitForm" label="Latitude QTH">
-                            <Form.Control type="text" placeholder="Latitude QTH" />
+                        <FloatingLabel controlId="LatitudeSummitForm" label="Latitude">
+                            <Form.Control type="text" placeholder="Latitude QTH" required />
                         </FloatingLabel>
                     </Col>
                     <Col md>
-                        <FloatingLabel controlId="LongitudeSummitForm" label="Longitude QTH">
+                        <FloatingLabel controlId="LongitudeSummitForm" label="Longitude">
                             <Form.Control type="text" placeholder="Longitude QTH" />
                         </FloatingLabel>
                     </Col>
@@ -40,6 +43,8 @@ export class SummitForm extends React.Component<ISummitFormProps, ISummitFormSta
                             <Form.Control type="text" placeholder="Location" />
                         </FloatingLabel>
                     </Col>
+                </Row>
+                <Row className="mb-3">
                     <Col md>
                         <FloatingLabel controlId="ReferenceSummitForm" label="Reference">
                             <Form.Control type="text" placeholder="Reference" />
