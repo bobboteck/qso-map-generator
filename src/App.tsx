@@ -63,5 +63,7 @@ export class App extends React.Component<IAppProps, IAppState>
     const { qsos } = this.state;
 
     this.setState({ qsos: [...qsos, data] });
+
+    console.log(...qsos);
   }
 }

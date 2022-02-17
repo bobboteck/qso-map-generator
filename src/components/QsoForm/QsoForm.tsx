@@ -18,8 +18,9 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
             TimeQso: "",
             Callsign: "",
             Locator: "",
-            Latitude: 0,
-            Longitude: 0,
+            Latitude: undefined,
+            Longitude: undefined,
+            Qrb: 0,
             Band: "",
             Mode: "",
             Frequency: undefined,
@@ -29,7 +30,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
 
     public render(): React.ReactElement<IQsoFormProps>
     {
-        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Band, Mode, Frequency, validated } = this.state;
+        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Band, Mode, Frequency, RstReceived, RstSent, TxPower, RxPower, Note, validated } = this.state;
 
         return(
             <Form validated={validated} id="formQso" >
@@ -51,7 +52,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 <Row className='mb-3'>
                     <Form.Group as={Col} md="4" controlId="bandQso">
                         <Form.Label>Band</Form.Label>
-                        <Form.Select aria-label="Band used in QSO">
+                        <Form.Select aria-label="Band used in QSO" onChange={this._onChangeBand}>
                             <option></option>
                             <option value="6m">6 m</option>
                             <option value="2m">2 m</option>
@@ -76,41 +77,41 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 <Row className="mb-3">
                     <Form.Group as={Col} md="4" controlId="locatorQso">
                         <Form.Label>Locator *</Form.Label>
-                        <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="Locator in format JN61aa" required />
+                        <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} required />
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="latitudeQso">
                         <Form.Label>Latitude *</Form.Label>
-                        <Form.Control type="number" className="input" value={Latitude} onChange={this._onChangeLatitude} placeholder="" required />
+                        <Form.Control type="number" className="input" value={Latitude} onChange={this._onChangeLatitude} required min="-90" max="90" />
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="longitudeQso">
                         <Form.Label>Longitude *</Form.Label>
-                        <Form.Control type="number" className="input" value={Longitude} onChange={this._onChangeLongitude} placeholder="" required />
+                        <Form.Control type="number" className="input" value={Longitude} onChange={this._onChangeLongitude} required min="-180" max="180" />
                     </Form.Group>
                 </Row>
 
                 <Row className="mb-3">
                     <Form.Group as={Col} md="3" controlId="rstrQso">
                         <Form.Label>RST received</Form.Label>
-                        <Form.Control type="number" className="input" />
+                        <Form.Control type="number" className="input" value={RstReceived} onChange={this._onChangeRstReceived} />
                     </Form.Group>
                     <Form.Group as={Col} md="3" controlId="rstsQso">
                         <Form.Label>RST sent</Form.Label>
-                        <Form.Control type="number" className="input" />
+                        <Form.Control type="number" className="input" value={RstSent} onChange={this._onChangeRstSent} />
                     </Form.Group>
                     <Form.Group as={Col} md="3" controlId="txPowerQso">
                         <Form.Label>TX power</Form.Label>
-                        <Form.Control type="number" className="input" />
+                        <Form.Control type="number" className="input" value={TxPower} onChange={this._onChangeTxPower} />
                     </Form.Group>
                     <Form.Group as={Col} md="3" controlId="rxPowerQso">
                         <Form.Label>RX Power</Form.Label>
-                        <Form.Control type="number" className="input" />
+                        <Form.Control type="number" className="input" value={RxPower} onChange={this._onChangeRxPower} />
                     </Form.Group>
                 </Row>
 
                 <Row className="mb-3">
                     <Form.Group as={Col} md="10" controlId="noteQso">
                         <Form.Label>Note</Form.Label>
-                        <Form.Control type="text" className="input" />
+                        <Form.Control type="text" className="input" value={Note} onChange={this._onChangeNote} />
                     </Form.Group>
                     <Form.Group as={Col} md="2" controlId="addQso">
                         <Form.Label>&nbsp;</Form.Label>
@@ -157,15 +158,46 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
         this.setState({ Frequency: e.target.value ? Number(e.target.value) : undefined });
     }
 
+    private _onChangeBand = (e: React.ChangeEvent<HTMLSelectElement>): void =>
+    {
+        this.setState({ Band: e.target.value ? e.target.value : ""});
+    }
+
     private _onChangeMode = (e: React.ChangeEvent<HTMLSelectElement>): void =>
     {
         this.setState({ Mode: e.target.value ? e.target.value : ""});
     }
 
+    private _onChangeRstReceived = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    {
+        this.setState({ RstReceived: e.target.value ? Number(e.target.value) : undefined});
+    }
+
+    private _onChangeRstSent = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    {
+        this.setState({ RstSent: e.target.value ? Number(e.target.value) : undefined});
+    }
+
+    private _onChangeTxPower = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    {
+        this.setState({ TxPower: e.target.value ? Number(e.target.value) : undefined});
+    }
+
+    private _onChangeRxPower = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    {
+        this.setState({ RxPower: e.target.value ? Number(e.target.value) : undefined});
+    }
+
+    private _onChangeNote = (e: React.ChangeEvent<HTMLInputElement>): void => 
+    {
+        this.setState({ Note: e.target.value ? e.target.value : "" });
+    }
+
+
 
     private _callBack = (event: any): void =>
     {
-        const { DateQso, TimeQso, Callsign, Locator, Mode, Frequency } = this.state;
+        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Band, Mode, Frequency, RstReceived, RstSent, TxPower, RxPower, Note } = this.state;
 
         const qsoFormElement: HTMLFormElement = (document.getElementById("formQso") as HTMLFormElement);
 
@@ -184,12 +216,20 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 Time: TimeQso,
                 CallSign: Callsign,
                 Locator: Locator,
-                Band: "",
+                Latitude: Latitude? Latitude : 0,
+                Longitude: Longitude? Longitude: 0,
+                QRB: 0,                 /* TODO: Need to be calculated */
+                Band: Band,
                 Mode: Mode,
-                Frequency: Frequency ? Number(Frequency) : undefined
+                Frequency: Frequency,
+                RstReceived: RstReceived ? RstReceived : 59,
+                RstSent: RstSent ? RstSent: 59,
+                TxPower: 0,
+                RxPower: 0,
+                Note: Note
             };
     
-            this.setState({ Callsign: "", Locator: "", Latitude: 0, Longitude: 0 });
+            this.setState({ Callsign: "", Locator: "", Latitude: undefined, Longitude: undefined, RxPower: undefined, Note: "" });
     
             this.props.callBack(data);
         }
