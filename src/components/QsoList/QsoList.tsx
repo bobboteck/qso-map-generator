@@ -30,7 +30,7 @@ export class QsoList extends React.Component<IQsoListProps, IQsoListState>
 
 {
     [...this.props.data].map((x, i) =>
-        <tr>
+        <tr key={i}>
             <td>{i}</td>
             <td>{x.Date} - {x.Time}</td>
             <td>{x.CallSign}</td>

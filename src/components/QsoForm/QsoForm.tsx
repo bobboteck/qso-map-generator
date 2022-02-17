@@ -18,41 +18,33 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
             TimeQso: "",
             Callsign: "",
             Locator: "",
+            Latitude: 0,
+            Longitude: 0,
             Band: "",
             Mode: "",
-            Frequency: "",
-            validated: false,
-            InvalidTimeMessage: ""
+            Frequency: undefined,
+            validated: false
         };
     }
 
     public render(): React.ReactElement<IQsoFormProps>
     {
-        const { DateQso, TimeQso, Callsign, Locator, Band, Mode, Frequency, validated, InvalidTimeMessage } = this.state;
+        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Band, Mode, Frequency, validated } = this.state;
 
         return(
-            <Form noValidate validated={validated} id="formQso" >
+            <Form validated={validated} id="formQso" >
                 <Row className='mb-3'>
                     <Form.Group as={Col} md="4" controlId="dateQso">
                         <Form.Label>Date *</Form.Label>
                         <Form.Control type="date" className="input" value={DateQso} onChange={this._onChangeDate} placeholder="Date in format dd/mm/yyyy" required />
-                        <Form.Control.Feedback type="invalid">
-                            Date is required
-                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="timeQso">
                         <Form.Label>Time *</Form.Label>
                         <Form.Control type="time" className="input" value={TimeQso} onChange={this._onChangeTime} placeholder="Time in format hh:mm" required pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" />
-                        <Form.Control.Feedback type="invalid">
-                            Time is required
-                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="callSignQso">
                         <Form.Label>Callsign *</Form.Label>
                         <Form.Control type="text" className="input" value={Callsign} onChange={this._onChangeCallsign} placeholder="Callsign of station" required />
-                        <Form.Control.Feedback type="invalid">
-                            Callsign is required
-                        </Form.Control.Feedback>
                     </Form.Group>
                 </Row>
 
@@ -60,7 +52,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                     <Form.Group as={Col} md="4" controlId="bandQso">
                         <Form.Label>Band</Form.Label>
                         <Form.Select aria-label="Band used in QSO">
-                            <option>Select the band</option>
+                            <option></option>
                             <option value="6m">6 m</option>
                             <option value="2m">2 m</option>
                             <option value="70cm">70 cm</option>
@@ -73,7 +65,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                     <Form.Group as={Col} md="4" controlId="modeQso">
                         <Form.Label>Mode</Form.Label>
                         <Form.Select aria-label="Mode used in QSO" onChange={this._onChangeMode}>
-                            <option>Select the mode</option>
+                            <option></option>
                             <option value="FM">FM</option>
                             <option value="SSB">SSB</option>
                             <option value="CW">CW</option>
@@ -83,16 +75,16 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 
                 <Row className="mb-3">
                     <Form.Group as={Col} md="4" controlId="locatorQso">
-                        <Form.Label>Locator</Form.Label>
-                        <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="Locator in format JN61aa" />
+                        <Form.Label>Locator *</Form.Label>
+                        <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="Locator in format JN61aa" required />
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="latitudeQso">
-                        <Form.Label>Latitude</Form.Label>
-                        <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="" />
+                        <Form.Label>Latitude *</Form.Label>
+                        <Form.Control type="number" className="input" value={Latitude} onChange={this._onChangeLatitude} placeholder="" required />
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="longitudeQso">
-                        <Form.Label>Longitude</Form.Label>
-                        <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} placeholder="" />
+                        <Form.Label>Longitude *</Form.Label>
+                        <Form.Control type="number" className="input" value={Longitude} onChange={this._onChangeLongitude} placeholder="" required />
                     </Form.Group>
                 </Row>
 
@@ -150,9 +142,19 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
         this.setState({ Locator: e.target.value ? e.target.value : "" });
     }
 
+    private _onChangeLatitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
+    {
+        this.setState({ Latitude: e.target.value ? Number(e.target.value) : 0 });
+    }
+
+    private _onChangeLongitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
+    {
+        this.setState({ Longitude: e.target.value ? Number(e.target.value) : 0 });
+    }
+
     private _onChangeFrequency = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        this.setState({ Frequency: e.target.value ? e.target.value : "" });
+        this.setState({ Frequency: e.target.value ? Number(e.target.value) : undefined });
     }
 
     private _onChangeMode = (e: React.ChangeEvent<HTMLSelectElement>): void =>
@@ -165,35 +167,31 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
     {
         const { DateQso, TimeQso, Callsign, Locator, Mode, Frequency } = this.state;
 
-        const form = event.currentTarget.parentNode.parentNode.parentNode;
+        const qsoFormElement: HTMLFormElement = (document.getElementById("formQso") as HTMLFormElement);
 
-        if (form.checkValidity() === false)
+        if(qsoFormElement.checkValidity() === false)
         {
-            console.log("Non è valido: ", event);
+            event.preventDefault();
+            event.stopPropagation();
 
-            this.setState({ InvalidTimeMessage: "Non è valido, perchè?" });
-
-          event.preventDefault();
-          event.stopPropagation();
+            this.setState({ validated: true });
         }
-    
-        //setValidated(true);
-        this.setState({ validated: true });
-
-
-        let data: IQsoData = 
+        else
         {
-            Date: DateQso,
-            Time: TimeQso,
-            CallSign: Callsign,
-            Locator: Locator,
-            Band: "",
-            Mode: Mode,
-            Frequency: Frequency ? Number(Frequency) : undefined
-        };
-
-        this.setState({ Callsign: "", Locator: "", Frequency: "" });
-
-        this.props.callBack(data);
+            let data: IQsoData = 
+            {
+                Date: DateQso,
+                Time: TimeQso,
+                CallSign: Callsign,
+                Locator: Locator,
+                Band: "",
+                Mode: Mode,
+                Frequency: Frequency ? Number(Frequency) : undefined
+            };
+    
+            this.setState({ Callsign: "", Locator: "", Latitude: 0, Longitude: 0 });
+    
+            this.props.callBack(data);
+        }
     }
 }

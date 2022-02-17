@@ -4,10 +4,11 @@ export interface IQsoFormState
     TimeQso: string;
     Callsign: string;
     Locator: string;
+    Latitude: number;
+    Longitude:number;
     Band: string;
     Mode: string;
-    Frequency?: string;
+    Frequency?: number;
 
     validated: boolean;
-    InvalidTimeMessage: string;
 }
