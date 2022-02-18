@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import './App.css';
+import { MapView } from './components/MapView/MapView';
 import { QsoForm } from './components/QsoForm/QsoForm';
 import { QsoList } from './components/QsoList/QsoList';
 import { SummitForm } from './components/QthForm/QthForm';
@@ -14,6 +15,7 @@ export interface IAppProps
 export interface IAppState
 {
   qsos: IQsoData[];
+  localLat: any;
 }
 
 export class App extends React.Component<IAppProps, IAppState>
@@ -22,18 +24,19 @@ export class App extends React.Component<IAppProps, IAppState>
   {
     super(props);
 
-    this.state = { qsos: [] };
+    this.state = { qsos: [], localLat: 0 };
   }
 
   public render(): React.ReactElement<IAppProps>
   {
-    const { qsos } = this.state;
+    const { qsos, localLat } = this.state;
 
     return(
       <Container>
         <Tabs defaultActiveKey="map" id="uncontrolled-tab-example" className="mb-3">
           <Tab eventKey="map" title="Map">
             Map information and preview
+            <MapView />
           </Tab>
           <Tab eventKey="qth" title="QTH">
             <SummitForm />
@@ -65,5 +68,11 @@ export class App extends React.Component<IAppProps, IAppState>
     this.setState({ qsos: [...qsos, data] });
 
     console.log(...qsos);
+  }
+
+
+  private _onChangeLatitude = (lat: any): void =>
+  {
+    console.log(lat);
   }
 }
