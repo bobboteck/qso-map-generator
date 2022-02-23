@@ -47,6 +47,12 @@
   width: -webkit-fill-available;
 }
 
+.centerButton
+{
+  height: 58px;
+  width: inherit;
+}
+
 .mapSize
 {
   width: 100%;

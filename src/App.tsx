@@ -44,7 +44,7 @@ export class App extends React.Component<IAppProps, IAppState>
           <Tab eventKey="equipment" title="Equipment">
             Equipment
           </Tab>
-          <Tab eventKey="qso" title="QSOs">
+          <Tab eventKey="qso" title="QSO">
             <Row>
               <Col>
                 <QsoForm callBack={this._onAddQso} />
@@ -55,6 +55,9 @@ export class App extends React.Component<IAppProps, IAppState>
                 <QsoList data={qsos} />
               </Col>
             </Row>    
+          </Tab>
+          <Tab eventKey="about" title="About">
+            About
           </Tab>
         </Tabs>
       </Container>
