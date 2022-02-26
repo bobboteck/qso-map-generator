@@ -4,6 +4,7 @@ import { IMapViewState } from './IMapViewState';
 import { Button, Col, FloatingLabel, Form, Row } from 'react-bootstrap';
 import { LatLng, LeafletEvent, Map } from 'leaflet';
 import { MapConsumer, MapContainer, MapContainerProps, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import { IMapConfig } from '../../entities/IMapConfig';
 
 const mapTiles = "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png";
 const mapAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -16,6 +17,7 @@ const maxLongitude: number = 180;
 
 const minZoom: number = 2;
 const maxZoom: number = 16;
+const startZoom: number = 8;
 
 export class MapView extends React.Component<IMapViewProps, IMapViewState>
 {
@@ -75,43 +77,15 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
                 </Row>
                 <Row>
                     <div className='mapSize'>
-
                         <MapContainer center={[Latitude, Longitude]} zoom={ZoomLevel} whenCreated={this._onWhenCreated}>
                             <TileLayer attribution={mapAttr} url={mapTiles} />
-                            <MapConsumer>
-                                {(map) =>
-                                    {
-/*
-                                        map.addEventListener('zoomend', () => 
-                                        {
-                                            let currentZoom: number = map.getZoom();
-
-                                            if(ZoomLevel !== currentZoom)
-                                            {
-                                                //window.console.log('Current zoom level -> ', currentZoom);
-                                                this.setState({ ZoomLevel: currentZoom});
-                                            }
-                                        });
-*/
-/*
-                                        map.addEventListener("dragend", () =>
-                                        {
-                                            //map.getCenter().lat
-                                            this.setState({ Latitude: map.getCenter().lat, Longitude: map.getCenter().lng});
-                                        });
-*/
-                                        //console.log('Map center: ', map.getCenter());
-                                        return null;
-                                    }
-                                }
-                            </MapConsumer>
                         </MapContainer>
-
                     </div>
                 </Row>
             </Form>
         );
     }
+
 
     /**
      * Change Latitude in the map, and check if value fault in the expetted range
@@ -119,7 +93,7 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
      */
     private _onChangeLatitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        const { objMap, Longitude } = this.state;
+        const { objMap, Longitude, ZoomLevel } = this.state;
 
         let newLatitude: number = e.target.value ? Number(e.target.value) : 0;
 
@@ -137,6 +111,10 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
         this.setState({ Latitude: newLatitude });
         // Move the map in the new Latitude
         objMap?.flyTo([newLatitude, Longitude]);
+
+        // Update OnChange
+        let configuration: IMapConfig = { Latitude: newLatitude, Longitude: Longitude, Zoom: ZoomLevel };
+        this.props.onChange(configuration);
     }
 
     /**
@@ -145,7 +123,7 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
      */
     private _onChangeLongitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        const { objMap, Latitude } = this.state;
+        const { objMap, Latitude, ZoomLevel } = this.state;
 
         let newLongitude: number = e.target.value ? Number(e.target.value) : 0;
 
@@ -163,6 +141,10 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
         this.setState({ Longitude: e.target.value ? Number(e.target.value) : 0 });
         // Move the map in the new Longitude
         objMap?.flyTo([Latitude, newLongitude]);
+
+        // Update OnChange
+        let configuration: IMapConfig = { Latitude: Latitude, Longitude: newLongitude, Zoom: ZoomLevel };
+        this.props.onChange(configuration);
     }
 
     /**
@@ -171,6 +153,7 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
      */
     private _onChangeZoomLevel = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
+        const { Latitude, Longitude } = this.state;
         let newZoom: number = e.target.value ? Number(e.target.value) : minZoom;
 
         // Check if new value falt in expected range
@@ -187,6 +170,10 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
         this.setState({ ZoomLevel: newZoom });
         // Set new zoom in Map
         (this.state.objMap as Map).setZoom(newZoom);
+
+        // Update OnChange
+        let configuration: IMapConfig = { Latitude: Latitude, Longitude: Longitude, Zoom: newZoom };
+        this.props.onChange(configuration);
     }
 
     /**
@@ -199,25 +186,37 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
         this.setState({objMap: map});
     }
 
-
+    /**
+     * Save in the State variables the current view (Location and Zoom) in the Map
+     * @param event Event on the element
+     */
     private _onCurrentCenterClick = (event: any): void =>
     {
-        //TODO: 
+        let center: LatLng = (this.state.objMap as Map).getCenter();
+        let zoom: number = (this.state.objMap as Map).getZoom();
+
+        this.setState({ Latitude: center.lat, Longitude: center.lng, ZoomLevel: zoom });
+
+        // Update OnChange
+        let configuration: IMapConfig = { Latitude: center.lat, Longitude: center.lng, Zoom: zoom };
+        this.props.onChange(configuration);
     }
 
 
+    /**
+     * Callback function for the geolocation method to get device position
+     * @param position The position of device
+     */
     private GetPosition = (position: GeolocationPosition): void =>
     {
         const { objMap } = this.state;
+        // Set the position returned
+        this.setState({ Latitude: position.coords.latitude, Longitude: position.coords.longitude, ZoomLevel: startZoom });
+        // Move Map at current position
+        (this.state.objMap as Map).flyTo([position.coords.latitude, position.coords.longitude], startZoom);
 
-        //console.log("I am here!");
-
-        this.setState({ Latitude: position.coords.latitude, Longitude: position.coords.longitude, ZoomLevel: 8 });
-
-        console.log("POSITION: ", position);
-        console.log("GET POSITION - STATE: ", this.state);
-        console.log("LocalMAP: ", this.state.objMap);
-
-        (this.state.objMap as Map).flyTo([position.coords.latitude, position.coords.longitude], 8);
+        // Update OnChange
+        let configuration: IMapConfig = { Latitude: position.coords.latitude, Longitude: position.coords.longitude, Zoom: startZoom };
+        this.props.onChange(configuration);
     }
 }

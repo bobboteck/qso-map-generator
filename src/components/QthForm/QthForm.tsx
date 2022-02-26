@@ -1,17 +1,31 @@
 import * as React from 'react';
-import { Col, FloatingLabel, Form, Row } from 'react-bootstrap';
+import { Button, Col, FloatingLabel, Form, Row } from 'react-bootstrap';
 import { IQthFormProps } from './IQthFormProps';
 import { IQthFormState } from './IQthFormState';
 
-export class SummitForm extends React.Component<IQthFormProps, IQthFormState>
+const minLatitude: number = -90;
+const maxLatitude: number = 90;
+
+const minLongitude: number = -180;
+const maxLongitude: number = 180;
+
+export class QthForm extends React.Component<IQthFormProps, IQthFormState>
 {
     constructor(props: IQthFormProps)
     {
         super(props);
+
+        this.state = 
+        {
+            Latitude: 0,
+            Longitude: 0
+        };
     }
 
     public render(): React.ReactElement<IQthFormProps>
     {
+        const { Latitude, Longitude } = this.state;
+
         return(
             <Form>
                 <Row className="mb-3">
@@ -27,14 +41,17 @@ Insert the information and position of your station during the activity
                         </FloatingLabel>
                     </Col>
                     <Col md>
-                        <FloatingLabel controlId="LatitudeSummitForm" label="Latitude">
-                            <Form.Control type="text" placeholder="Latitude QTH" required />
+                        <FloatingLabel controlId="latitudeMapForm" label="Latitude">
+                            <Form.Control type="number" value={Latitude} required min={minLatitude} max={maxLatitude} onChange={this._onChangeLatitude} />
                         </FloatingLabel>
                     </Col>
                     <Col md>
-                        <FloatingLabel controlId="LongitudeSummitForm" label="Longitude">
-                            <Form.Control type="text" placeholder="Longitude QTH" />
+                    <FloatingLabel controlId="longitudeMapForm" label="Longitude">
+                            <Form.Control type="number" value={Longitude} required min={minLongitude} max={maxLongitude} onChange={this._onChangeLongitude} />
                         </FloatingLabel>
+                    </Col>
+                    <Col md>
+                        <Button variant="primary" type="button" className="centerButton" onClick={this._onCurrentCenterClick}>Use current center</Button>
                     </Col>
                 </Row>
                 <Row className="mb-3">
@@ -54,4 +71,29 @@ Insert the information and position of your station during the activity
             </Form>
         );
     }
+
+    private _onChangeLatitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
+    {
+
+    }
+
+    /**
+     * Change Longitude in the map, and check if value fault in the expetted range
+     * @param e Event on the element
+     */
+    private _onChangeLongitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
+    {
+
+    }
+
+    private _onCurrentCenterClick = (event: any): void =>
+    {
+        console.log("onCurrentCenter: ", this.props.CenterLatitude, "-", this.props.CenterLongitude);
+
+        this.setState({ Latitude: this.props.CenterLatitude, Longitude: this.props.CenterLongitude });
+
+        //TODO: .....
+        //this.props.onChange()
+    }
+
 }

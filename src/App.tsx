@@ -4,7 +4,8 @@ import './App.css';
 import { MapView } from './components/MapView/MapView';
 import { QsoForm } from './components/QsoForm/QsoForm';
 import { QsoList } from './components/QsoList/QsoList';
-import { SummitForm } from './components/QthForm/QthForm';
+import { QthForm } from './components/QthForm/QthForm';
+import { IMapConfig } from './entities/IMapConfig';
 import { IQsoData } from './entities/IQsoData';
 
 export interface IAppProps
@@ -16,6 +17,7 @@ export interface IAppState
 {
   qsos: IQsoData[];
   localLat: any;
+  configurationMap: IMapConfig;
 }
 
 export class App extends React.Component<IAppProps, IAppState>
@@ -24,22 +26,25 @@ export class App extends React.Component<IAppProps, IAppState>
   {
     super(props);
 
-    this.state = { qsos: [], localLat: 0 };
+
+    let ZeroPosition: IMapConfig = { Latitude: 0, Longitude: 0, Zoom: 0 };
+
+    this.state = { qsos: [], localLat: 0, configurationMap: ZeroPosition };
   }
 
   public render(): React.ReactElement<IAppProps>
   {
-    const { qsos, localLat } = this.state;
+    const { qsos, localLat, configurationMap } = this.state;
 
     return(
       <Container>
         <Tabs defaultActiveKey="map" id="uncontrolled-tab-example" className="mb-3">
           <Tab eventKey="map" title="Map">
-            Map information and preview
-            <MapView />
+            Map position and preview
+            <MapView onChange={this._onChangeMapView} />
           </Tab>
           <Tab eventKey="qth" title="QTH">
-            <SummitForm />
+            <QthForm CenterLatitude={configurationMap.Latitude} CenterLongitude={configurationMap.Longitude} onChange={this._onChangeQth} />
           </Tab>
           <Tab eventKey="equipment" title="Equipment">
             Equipment
@@ -55,6 +60,9 @@ export class App extends React.Component<IAppProps, IAppState>
                 <QsoList data={qsos} />
               </Col>
             </Row>    
+          </Tab>
+          <Tab eventKey="export" title="Export">
+            Export
           </Tab>
           <Tab eventKey="about" title="About">
             About
@@ -77,5 +85,17 @@ export class App extends React.Component<IAppProps, IAppState>
   private _onChangeLatitude = (lat: any): void =>
   {
     console.log(lat);
+  }
+
+
+
+  private _onChangeMapView = (configuration: IMapConfig): void =>
+  {
+    this.setState({ configurationMap: configuration });
+  }
+
+  private _onChangeQth = (data: any): void =>
+  {
+    //TODO: 
   }
 }
