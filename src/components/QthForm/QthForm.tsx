@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Col, FloatingLabel, Form, Row } from 'react-bootstrap';
+import { Button, Col, FloatingLabel, Form, Row, Table } from 'react-bootstrap';
 import { IQthFormProps } from './IQthFormProps';
 import { IQthFormState } from './IQthFormState';
 
@@ -17,8 +17,11 @@ export class QthForm extends React.Component<IQthFormProps, IQthFormState>
 
         this.state = 
         {
+            Locator: "",
             Latitude: 0,
-            Longitude: 0
+            Longitude: 0,
+            Location: "",
+            References: []
         };
     }
 
@@ -37,7 +40,7 @@ Insert the information and position of your station during the activity
                 <Row className="mb-3">
                     <Col md>
                         <FloatingLabel controlId="LocatorSummitForm" label="Locator">
-                            <Form.Control type="text" placeholder="jn00aa" />
+                            <Form.Control type="text" placeholder="jn00aa" onChange={this._onChanegLocator} />
                         </FloatingLabel>
                     </Col>
                     <Col md>
@@ -51,7 +54,7 @@ Insert the information and position of your station during the activity
                         </FloatingLabel>
                     </Col>
                     <Col md>
-                        <Button variant="primary" type="button" className="centerButton" onClick={this._onCurrentCenterClick}>Use current center</Button>
+                        <Button variant="primary" type="button" className="centerButton" onClick={this._onClickCurrentCenter}>Use current center</Button>
                     </Col>
                 </Row>
                 <Row className="mb-3">
@@ -67,9 +70,54 @@ Insert the information and position of your station during the activity
                             <Form.Control type="text" placeholder="Reference" />
                         </FloatingLabel>
                     </Col>
+                    <Col md>
+                        <FloatingLabel controlId="referenceTypeSelect" label="Reference type">
+                            <Form.Select aria-label="Select reference type">
+                                <option></option>
+                                <option value="SOTA">SOTA</option>
+                                <option value="POTA">POTA</option>
+                                <option value="IOTA">IOTA</option>
+                            </Form.Select>
+                        </FloatingLabel>
+                    </Col>
+                    <Col md>
+                        <Button variant="secondary" type="button" className="centerButton" onClick={this._onClickAdd}>Add</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md>
+                        <p>
+List of added Reference:
+                        </p>
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Reference</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        {
+                            [...this.state.References].map((x, i) =>
+                                <tr key={i}>
+                                    <td>{i}</td>
+                                    <td>{x.Code}</td>
+                                    <td>{x.Type}</td>
+                                </tr>
+                            )
+                        }
+                            </tbody>
+                        </Table>
+                    </Col>
                 </Row>
             </Form>
         );
+    }
+
+    private _onChanegLocator = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    {
+
     }
 
     private _onChangeLatitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
@@ -86,7 +134,7 @@ Insert the information and position of your station during the activity
 
     }
 
-    private _onCurrentCenterClick = (event: any): void =>
+    private _onClickCurrentCenter = (event: any): void =>
     {
         console.log("onCurrentCenter: ", this.props.CenterLatitude, "-", this.props.CenterLongitude);
 
@@ -96,4 +144,9 @@ Insert the information and position of your station during the activity
         //this.props.onChange()
     }
 
+
+    private _onClickAdd = (event: any): void =>
+    {
+
+    }
 }
