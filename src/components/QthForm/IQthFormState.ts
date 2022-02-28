@@ -6,5 +6,8 @@ export interface IQthFormState
     Latitude: number;
     Longitude: number;
     Location: string;
+    ReferenceCode: string;
+    ReferenceType: string;
+    
     References: IReference[];
 }

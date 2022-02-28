@@ -5,7 +5,7 @@ export interface IQthData
     Latitude: number;
     Longitude: number;
     Locator: string;
-    isPortable: boolean;
     Location: string;
-    References: IReference;
+    References: IReference[];
+    isPortable: boolean;
 }

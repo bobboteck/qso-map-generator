@@ -7,6 +7,7 @@ import { QsoList } from './components/QsoList/QsoList';
 import { QthForm } from './components/QthForm/QthForm';
 import { IMapConfig } from './entities/IMapConfig';
 import { IQsoData } from './entities/IQsoData';
+import { IQthData } from './entities/IQthData';
 
 export interface IAppProps
 {
@@ -15,9 +16,9 @@ export interface IAppProps
 
 export interface IAppState
 {
-  qsos: IQsoData[];
-  localLat: any;
   configurationMap: IMapConfig;
+  qth: IQthData;
+  qsos: IQsoData[];
 }
 
 export class App extends React.Component<IAppProps, IAppState>
@@ -28,13 +29,19 @@ export class App extends React.Component<IAppProps, IAppState>
 
 
     let ZeroPosition: IMapConfig = { Latitude: 0, Longitude: 0, Zoom: 0 };
+    let emptyQth: IQthData = { Latitude: 0, Longitude: 0, Locator: "", Location: "", References: [], isPortable: true };
 
-    this.state = { qsos: [], localLat: 0, configurationMap: ZeroPosition };
+    this.state = 
+    {
+      configurationMap: ZeroPosition, 
+      qth: emptyQth,
+      qsos: [] 
+    };
   }
 
   public render(): React.ReactElement<IAppProps>
   {
-    const { qsos, localLat, configurationMap } = this.state;
+    const { qsos, configurationMap } = this.state;
 
     return(
       <Container>
@@ -72,30 +79,29 @@ export class App extends React.Component<IAppProps, IAppState>
     );
   }
 
+
+  private _onChangeMapView = (configuration: IMapConfig): void =>
+  {
+    this.setState({ configurationMap: configuration });
+
+    console.log("Configuration Map data: ", configuration);
+  }
+
+
+  private _onChangeQth = (data: IQthData): void =>
+  {
+    this.setState({ qth: data });
+
+    console.log("QTH data: ", data);
+  }
+
+
   private _onAddQso = (data: IQsoData): void =>
   {
     const { qsos } = this.state;
 
     this.setState({ qsos: [...qsos, data] });
 
-    console.log(...qsos);
-  }
-
-
-  private _onChangeLatitude = (lat: any): void =>
-  {
-    console.log(lat);
-  }
-
-
-
-  private _onChangeMapView = (configuration: IMapConfig): void =>
-  {
-    this.setState({ configurationMap: configuration });
-  }
-
-  private _onChangeQth = (data: any): void =>
-  {
-    //TODO: 
+    console.log("QSOs data: ", ...qsos);
   }
 }
