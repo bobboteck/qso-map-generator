@@ -224,13 +224,20 @@ List of added Reference:
     {
         const { Latitude, Longitude, Locator, Location, References, ReferenceCode, ReferenceType } = this.state;
 
-        let newReference: IReference = { Code: ReferenceCode, Type: ReferenceType };
+        if(ReferenceCode !== "" && ReferenceType !== "")
+        {
+            let newReference: IReference = { Code: ReferenceCode, Type: ReferenceType };
 
-        this.setState({ References: [ ...References, newReference ], ReferenceCode: "", ReferenceType: "" });
+            this.setState({ References: [ ...References, newReference ], ReferenceCode: "", ReferenceType: "" });
 
-        // Update OnChange
-        let qthData: IQthData = { Latitude: Latitude, Longitude: Longitude, Locator: Locator, Location: Location, References: [ ...References, newReference ], isPortable: true };
-        this.props.onChange(qthData);
+            // Update OnChange
+            let qthData: IQthData = { Latitude: Latitude, Longitude: Longitude, Locator: Locator, Location: Location, References: [ ...References, newReference ], isPortable: true };
+            this.props.onChange(qthData);
+        }
+        else
+        {
+            alert("Insert Reference Code and Type to add one!");
+        }
     }
 
     /**
