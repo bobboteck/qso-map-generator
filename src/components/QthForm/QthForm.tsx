@@ -190,12 +190,13 @@ List of added Reference:
      */
     private _onChangeLocation = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        const { Latitude, Longitude, Locator, Location, References } = this.state;
+        const { Latitude, Longitude, Locator, References } = this.state;
 
-        this.setState({ Location: e.target.value ? e.target.value : "" });
+        let loc: string = e.target.value ? e.target.value : "";
+        this.setState({ Location: loc });
 
         // Update OnChange
-        let qthData: IQthData = { Latitude: Latitude, Longitude: Longitude, Locator: Locator, Location: Location, References: References, isPortable: true };
+        let qthData: IQthData = { Latitude: Latitude, Longitude: Longitude, Locator: Locator, Location: loc, References: References, isPortable: true };
         this.props.onChange(qthData);
     }
 
