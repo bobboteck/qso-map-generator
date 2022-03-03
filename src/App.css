@@ -63,3 +63,11 @@
   height: 600px;
   width: 100%;
 }
+
+.jsonDataContainer
+{
+  border: solid 1px lightgray;
+  padding: 5px;
+  height: 70vh;
+  overflow: auto;
+}

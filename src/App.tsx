@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import './App.css';
+import { ExportData } from './components/ExportData/ExportData';
 import { MapView } from './components/MapView/MapView';
 import { QsoForm } from './components/QsoForm/QsoForm';
 import { QsoList } from './components/QsoList/QsoList';
@@ -29,7 +30,6 @@ export class App extends React.Component<IAppProps, IAppState>
   constructor(props: IAppProps)
   {
     super(props);
-
 
     let ZeroPosition: IMapConfig = { Latitude: 0, Longitude: 0, Zoom: 0 };
     let emptyQth: IQthData = { Latitude: 0, Longitude: 0, Locator: "", Location: "", References: [], isPortable: true };
@@ -72,10 +72,7 @@ export class App extends React.Component<IAppProps, IAppState>
             </Row>    
           </Tab>
           <Tab eventKey="export" title="Export">
-            <p>Export</p>
-            <pre>
-            {JSON.stringify(qsoMapData, undefined, 2)}
-            </pre>
+            <ExportData qsoMapData={qsoMapData} />
           </Tab>
           <Tab eventKey="about" title="About">
             About
@@ -94,7 +91,7 @@ export class App extends React.Component<IAppProps, IAppState>
 
     this.setState({ configurationMap: configuration, qsoMapData: qmData });
 
-    console.log("Configuration Map data: ", configuration);
+    //console.log("Configuration Map data: ", configuration);
   }
 
 
@@ -106,7 +103,7 @@ export class App extends React.Component<IAppProps, IAppState>
 
     this.setState({ qth: data, qsoMapData: qmData });
 
-    console.log("QTH data: ", data);
+    //console.log("QTH data: ", data);
   }
 
 
@@ -118,6 +115,6 @@ export class App extends React.Component<IAppProps, IAppState>
 
     this.setState({ qsos: [...qsos, data], qsoMapData: qmData });
 
-    console.log("QSOs data: ", ...qsos);
+    //console.log("QSOs data: ", ...qsos);
   }
 }

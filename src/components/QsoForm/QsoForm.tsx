@@ -224,8 +224,8 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 Frequency: Frequency,
                 RstReceived: RstReceived ? RstReceived : 59,
                 RstSent: RstSent ? RstSent: 59,
-                TxPower: 0,
-                RxPower: 0,
+                TxPower: TxPower,
+                RxPower: RxPower,
                 Note: Note
             };
     
