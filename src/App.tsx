@@ -7,6 +7,7 @@ import { QsoList } from './components/QsoList/QsoList';
 import { QthForm } from './components/QthForm/QthForm';
 import { IMapConfig } from './entities/IMapConfig';
 import { IQsoData } from './entities/IQsoData';
+import { IQsoMapData } from './entities/IQsoMapData';
 import { IQthData } from './entities/IQthData';
 
 export interface IAppProps
@@ -19,6 +20,8 @@ export interface IAppState
   configurationMap: IMapConfig;
   qth: IQthData;
   qsos: IQsoData[];
+
+  qsoMapData?: IQsoMapData;
 }
 
 export class App extends React.Component<IAppProps, IAppState>
@@ -41,7 +44,7 @@ export class App extends React.Component<IAppProps, IAppState>
 
   public render(): React.ReactElement<IAppProps>
   {
-    const { qsos, configurationMap } = this.state;
+    const { qsos, configurationMap, qsoMapData } = this.state;
 
     return(
       <Container>
@@ -69,7 +72,10 @@ export class App extends React.Component<IAppProps, IAppState>
             </Row>    
           </Tab>
           <Tab eventKey="export" title="Export">
-            Export
+            <p>Export</p>
+            <pre>
+            {JSON.stringify(qsoMapData, undefined, 2)}
+            </pre>
           </Tab>
           <Tab eventKey="about" title="About">
             About
@@ -82,7 +88,11 @@ export class App extends React.Component<IAppProps, IAppState>
 
   private _onChangeMapView = (configuration: IMapConfig): void =>
   {
-    this.setState({ configurationMap: configuration });
+    const { qth, qsos } = this.state;
+
+    let qmData: IQsoMapData = { MapConfig: configuration, QTH: qth, QSOs: qsos };
+
+    this.setState({ configurationMap: configuration, qsoMapData: qmData });
 
     console.log("Configuration Map data: ", configuration);
   }
@@ -90,7 +100,11 @@ export class App extends React.Component<IAppProps, IAppState>
 
   private _onChangeQth = (data: IQthData): void =>
   {
-    this.setState({ qth: data });
+    const { configurationMap, qsos } = this.state;
+
+    let qmData: IQsoMapData = { MapConfig: configurationMap, QTH: data, QSOs: qsos };
+
+    this.setState({ qth: data, qsoMapData: qmData });
 
     console.log("QTH data: ", data);
   }
@@ -98,9 +112,11 @@ export class App extends React.Component<IAppProps, IAppState>
 
   private _onAddQso = (data: IQsoData): void =>
   {
-    const { qsos } = this.state;
+    const { configurationMap, qth, qsos } = this.state;
 
-    this.setState({ qsos: [...qsos, data] });
+    let qmData: IQsoMapData = { MapConfig: configurationMap, QTH: qth, QSOs: [...qsos, data] };
+
+    this.setState({ qsos: [...qsos, data], qsoMapData: qmData });
 
     console.log("QSOs data: ", ...qsos);
   }
