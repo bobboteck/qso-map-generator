@@ -26,7 +26,7 @@ export class ExportData extends React.Component<IExportDataProps, IExportDataSta
                     <Col>
                         <div className="jsonDataContainer">
                             <pre>
-                            {JSON.stringify(this.props.qsoMapData, undefined, 2)}
+                            {JSON.stringify(this.props.QsoMapData, undefined, 2)}
                             </pre>
                         </div>
                     </Col>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IMapViewProps } from './IMapViewProps';
 import { IMapViewState } from './IMapViewState';
-import { Button, Col, FloatingLabel, Form, Row } from 'react-bootstrap';
+import { Button, Col, FloatingLabel, Form, Row, Table } from 'react-bootstrap';
 import { LatLng, LeafletEvent, Map } from 'leaflet';
 import { MapConsumer, MapContainer, MapContainerProps, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { IMapConfig } from '../../entities/IMapConfig';
@@ -77,8 +77,48 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
                 </Row>
                 <Row>
                     <div className='mapSize'>
-                        <MapContainer center={[Latitude, Longitude]} zoom={ZoomLevel} whenCreated={this._onWhenCreated}>
+                        <MapContainer center={[Latitude, Longitude]} zoom={ZoomLevel} whenCreated={this._onWhenCreated} maxZoom={maxZoom} minZoom={minZoom}>
                             <TileLayer attribution={mapAttr} url={mapTiles} />
+{
+    this.props.QsoMapData && this.props.QsoMapData.QTH &&
+    (
+                            <Marker position={[this.props.QsoMapData.QTH.Latitude, this.props.QsoMapData.QTH.Longitude]}>
+                                <Popup>
+                                    {this.props.QsoMapData.QTH.Location}<br />{this.props.QsoMapData.QTH.Locator}
+                                    <Table striped bordered hover>
+                                        <thead>
+                                            <tr>
+                                                <th>Reference</th>
+                                                <th>Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {
+                                            [...this.props.QsoMapData.QTH.References].map((r, i) =>
+                                            <tr key={i}>
+                                                <td>{r.Code}</td>
+                                                <td>{r.Type}</td>
+                                            </tr>
+                                            )
+                                        }
+                                        </tbody>
+                                    </Table>
+                                </Popup>
+                            </Marker>
+    )
+}
+{
+    this.props.QsoMapData &&
+    (
+        [...this.props.QsoMapData.QSOs].map((q, i) =>
+                            <Marker position={[q.Latitude, q.Longitude]}>
+                                <Popup>
+                                    {q.CallSign}
+                                </Popup>
+                            </Marker>
+        )
+    )
+}
                         </MapContainer>
                     </div>
                 </Row>

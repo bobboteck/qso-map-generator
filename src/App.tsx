@@ -19,7 +19,7 @@ export interface IAppProps
 export interface IAppState
 {
   configurationMap: IMapConfig;
-  qth: IQthData;
+  qth?: IQthData;
   qsos: IQsoData[];
 
   qsoMapData?: IQsoMapData;
@@ -37,7 +37,7 @@ export class App extends React.Component<IAppProps, IAppState>
     this.state = 
     {
       configurationMap: ZeroPosition, 
-      qth: emptyQth,
+      //qth: emptyQth,
       qsos: [] 
     };
   }
@@ -46,12 +46,14 @@ export class App extends React.Component<IAppProps, IAppState>
   {
     const { qsos, configurationMap, qsoMapData } = this.state;
 
+console.log("D:",this.state.qsoMapData);
+
     return(
       <Container>
         <Tabs defaultActiveKey="map" id="uncontrolled-tab-example" className="mb-3">
           <Tab eventKey="map" title="Map">
             Map position and preview
-            <MapView onChange={this._onChangeMapView} />
+            <MapView QsoMapData={qsoMapData} onChange={this._onChangeMapView} />
           </Tab>
           <Tab eventKey="qth" title="QTH">
             <QthForm CenterLatitude={configurationMap.Latitude} CenterLongitude={configurationMap.Longitude} onChange={this._onChangeQth} />
@@ -69,10 +71,10 @@ export class App extends React.Component<IAppProps, IAppState>
               <Col>
                 <QsoList data={qsos} />
               </Col>
-            </Row>    
+            </Row>
           </Tab>
           <Tab eventKey="export" title="Export">
-            <ExportData qsoMapData={qsoMapData} />
+            <ExportData QsoMapData={qsoMapData} />
           </Tab>
           <Tab eventKey="about" title="About">
             About

@@ -1,3 +1,4 @@
+import { IEquipmentData } from "./IEquipmentData";
 import { IMapConfig } from "./IMapConfig";
 import { IQsoData } from "./IQsoData";
 import { IQthData } from "./IQthData";
@@ -5,6 +6,7 @@ import { IQthData } from "./IQthData";
 export interface IQsoMapData
 {
     MapConfig: IMapConfig;
-    QTH: IQthData;
+    QTH?: IQthData;
+    Equipment?: IEquipmentData;
     QSOs: IQsoData[];
 }
