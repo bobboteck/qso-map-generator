@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IMapViewProps } from './IMapViewProps';
 import { IMapViewState } from './IMapViewState';
 import { Button, Col, FloatingLabel, Form, Row, Table } from 'react-bootstrap';
-import { LatLng, LeafletEvent, Map } from 'leaflet';
+import L, { Icon, IconOptions, LatLng, LeafletEvent, Map } from 'leaflet';
 import { MapConsumer, MapContainer, MapContainerProps, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { IMapConfig } from '../../entities/IMapConfig';
 
@@ -18,6 +18,8 @@ const maxLongitude: number = 180;
 const minZoom: number = 2;
 const maxZoom: number = 16;
 const startZoom: number = 8;
+
+const qthIcon = new L.Icon({ iconUrl: 'qso-map-generator/map-station.png', iconSize: [41,41], iconAnchor: [20,40], popupAnchor: [20,0] });
 
 export class MapView extends React.Component<IMapViewProps, IMapViewState>
 {
@@ -82,7 +84,7 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
 {
     this.props.QsoMapData && this.props.QsoMapData.QTH &&
     (
-                            <Marker position={[this.props.QsoMapData.QTH.Latitude, this.props.QsoMapData.QTH.Longitude]}>
+                            <Marker position={[this.props.QsoMapData.QTH.Latitude, this.props.QsoMapData.QTH.Longitude]} icon={qthIcon}>
                                 <Popup>
                                     {this.props.QsoMapData.QTH.Location}<br />{this.props.QsoMapData.QTH.Locator}
                                     <Table striped bordered hover>
