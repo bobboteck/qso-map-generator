@@ -20,8 +20,8 @@ export class QthForm extends React.Component<IQthFormProps, IQthFormState>
         this.state = 
         {
             Locator: "",
-            Latitude: 0,
-            Longitude: 0,
+            //Latitude: 0,
+            //Longitude: 0,
             Location: "",
             ReferenceCode: "",
             ReferenceType: "",
@@ -42,22 +42,25 @@ Insert the information and position of your station during the activity
                     </p>
                 </Row>
                 <Row className="mb-3">
-                    <Col md>
+                    <Col md="3">
                         <FloatingLabel controlId="ReferenceLocatorField" label="Locator">
                             <Form.Control type="text" value={Locator} maxLength={6} onChange={this._onChanegLocator} />
                         </FloatingLabel>
                     </Col>
-                    <Col md>
+                    <Col md={1}>
+                        <Button variant="primary" type="button" className="centerButton">&#8644;</Button>
+                    </Col>
+                    <Col md={3}>
                         <FloatingLabel controlId="ReferenceLatitudeField" label="Latitude">
                             <Form.Control type="number" value={Latitude} required min={minLatitude} max={maxLatitude} onChange={this._onChangeLatitude} />
                         </FloatingLabel>
                     </Col>
-                    <Col md>
-                    <FloatingLabel controlId="ReferenceLongitudeField" label="Longitude">
+                    <Col md={3}>
+                        <FloatingLabel controlId="ReferenceLongitudeField" label="Longitude">
                             <Form.Control type="number" value={Longitude} required min={minLongitude} max={maxLongitude} onChange={this._onChangeLongitude} />
                         </FloatingLabel>
                     </Col>
-                    <Col md>
+                    <Col md={2}>
                         <Button variant="primary" type="button" className="centerButton" onClick={this._onClickCurrentCenter}>Use current center</Button>
                     </Col>
                 </Row>

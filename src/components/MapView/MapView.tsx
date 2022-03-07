@@ -5,6 +5,7 @@ import { Button, Col, FloatingLabel, Form, Row, Table } from 'react-bootstrap';
 import L, { Icon, IconOptions, LatLng, LeafletEvent, Map } from 'leaflet';
 import { MapConsumer, MapContainer, MapContainerProps, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { IMapConfig } from '../../entities/IMapConfig';
+import { QthMarker } from '../QthMarker/QthMarker';
 
 const mapTiles = "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png";
 const mapAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -18,8 +19,6 @@ const maxLongitude: number = 180;
 const minZoom: number = 2;
 const maxZoom: number = 16;
 const startZoom: number = 8;
-
-const qthIcon = new L.Icon({ iconUrl: 'qso-map-generator/map-station.png', iconSize: [41,41], iconAnchor: [20,40], popupAnchor: [20,0] });
 
 export class MapView extends React.Component<IMapViewProps, IMapViewState>
 {
@@ -81,34 +80,7 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
                     <div className='mapSize'>
                         <MapContainer center={[Latitude, Longitude]} zoom={ZoomLevel} whenCreated={this._onWhenCreated} maxZoom={maxZoom} minZoom={minZoom}>
                             <TileLayer attribution={mapAttr} url={mapTiles} />
-{
-    this.props.QsoMapData && this.props.QsoMapData.QTH &&
-    (
-                            <Marker position={[this.props.QsoMapData.QTH.Latitude, this.props.QsoMapData.QTH.Longitude]} icon={qthIcon}>
-                                <Popup>
-                                    {this.props.QsoMapData.QTH.Location}<br />{this.props.QsoMapData.QTH.Locator}
-                                    <Table striped bordered hover>
-                                        <thead>
-                                            <tr>
-                                                <th>Reference</th>
-                                                <th>Type</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        {
-                                            [...this.props.QsoMapData.QTH.References].map((r, i) =>
-                                            <tr key={i}>
-                                                <td>{r.Code}</td>
-                                                <td>{r.Type}</td>
-                                            </tr>
-                                            )
-                                        }
-                                        </tbody>
-                                    </Table>
-                                </Popup>
-                            </Marker>
-    )
-}
+                            <QthMarker Data={this.props.QsoMapData?.QTH} />
 {
     this.props.QsoMapData &&
     (

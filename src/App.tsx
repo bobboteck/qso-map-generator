@@ -46,7 +46,7 @@ export class App extends React.Component<IAppProps, IAppState>
   {
     const { qsos, configurationMap, qsoMapData } = this.state;
 
-console.log("D:",this.state.qsoMapData);
+//console.log("D:",this.state.qsoMapData);
 
     return(
       <Container>

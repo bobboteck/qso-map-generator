@@ -50,7 +50,7 @@
 .centerButton
 {
   height: 58px;
-  width: inherit;
+  width: -webkit-fill-available;
 }
 
 .mapSize
