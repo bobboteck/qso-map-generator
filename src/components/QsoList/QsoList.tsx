@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { IQsoListProps } from './IQsoListProps';
 import { IQsoListState } from './IQsoListState';
 
@@ -23,11 +23,10 @@ export class QsoList extends React.Component<IQsoListProps, IQsoListState>
             <th>Band</th>
             <th>Frequency</th>
             <th>Mode</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-
-
 {
     [...this.props.data].map((x, i) =>
         <tr key={i}>
@@ -38,13 +37,22 @@ export class QsoList extends React.Component<IQsoListProps, IQsoListState>
             <td>{x.Band}</td>
             <td>{x.Frequency}</td>
             <td>{x.Mode}</td>
+            <td><Button variant="outline-danger" onClick={() => this._onClickRemoveQso(i)}>✕</Button></td>
         </tr>
     )
 }
-
-
     </tbody>
 </Table>
         );
+    }
+
+
+    /**
+     * Remove Reference to the list
+     * @param index {number} Index of item to be removed from the list
+     */
+    private _onClickRemoveQso = (index: number): void =>
+    {
+        this.props.onRemoveQso(index);
     }
 }

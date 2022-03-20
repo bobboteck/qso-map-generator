@@ -1,3 +1,5 @@
+import { IQsoData } from "../../entities/IQsoData";
+
 export interface IQsoFormState
 {
     /** Required */
@@ -26,4 +28,7 @@ export interface IQsoFormState
     Note?: string;
 
     validated: boolean;
+
+
+    Qsos: IQsoData[];
 }

@@ -6,7 +6,7 @@ import { IQthData } from '../../entities/IQthData';
 import { IQthMarkerProps } from './IQthMarkerProps';
 import { IQthMarkerState } from './IQthMarkerState';
 
-const qthIcon = new L.Icon({ iconUrl: 'qso-map-generator/map-station.png', iconSize: [41,41], iconAnchor: [20,40], popupAnchor: [20,0] });
+const qthIcon = new L.Icon({ iconUrl: 'qso-map-generator/map-station.png', iconSize: [41,41], iconAnchor: [20,40], popupAnchor: [0,-30] });
 
 export class QthMarker extends React.Component<IQthMarkerProps, IQthMarkerState>
 {
@@ -24,7 +24,7 @@ export class QthMarker extends React.Component<IQthMarkerProps, IQthMarkerState>
         {
             let qth: IQthData = this.props.Data;
             // Check if Latitude and Longitude is defined to show the Marker of QTH
-            if(qth.Latitude !== null && qth.Longitude !== null)
+            if(qth.Latitude !== undefined && qth.Latitude !== null && qth.Longitude !== undefined && qth.Longitude !== null)
             {
                 let lat: number = (qth.Latitude as number);
                 let lng: number = (qth.Longitude as number);

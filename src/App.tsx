@@ -44,7 +44,7 @@ export class App extends React.Component<IAppProps, IAppState>
 
   public render(): React.ReactElement<IAppProps>
   {
-    const { qsos, configurationMap, qsoMapData } = this.state;
+    const { qth, qsos, configurationMap, qsoMapData } = this.state;
 
 //console.log("D:",this.state.qsoMapData);
 
@@ -64,12 +64,12 @@ export class App extends React.Component<IAppProps, IAppState>
           <Tab eventKey="qso" title="QSO">
             <Row>
               <Col>
-                <QsoForm callBack={this._onAddQso} />
+                <QsoForm qthLocator={qth?.Locator} callBack={this._onAddQso} />
               </Col>
             </Row>
             <Row>
               <Col>
-                <QsoList data={qsos} />
+                <QsoList data={qsos} onRemoveQso={this._onRemoveQso} />
               </Col>
             </Row>
           </Tab>
@@ -92,8 +92,6 @@ export class App extends React.Component<IAppProps, IAppState>
     let qmData: IQsoMapData = { MapConfig: configuration, QTH: qth, QSOs: qsos };
 
     this.setState({ configurationMap: configuration, qsoMapData: qmData });
-
-    //console.log("Configuration Map data: ", configuration);
   }
 
 
@@ -104,8 +102,6 @@ export class App extends React.Component<IAppProps, IAppState>
     let qmData: IQsoMapData = { MapConfig: configurationMap, QTH: data, QSOs: qsos };
 
     this.setState({ qth: data, qsoMapData: qmData });
-
-    //console.log("QTH data: ", data);
   }
 
 
@@ -116,7 +112,20 @@ export class App extends React.Component<IAppProps, IAppState>
     let qmData: IQsoMapData = { MapConfig: configurationMap, QTH: qth, QSOs: [...qsos, data] };
 
     this.setState({ qsos: [...qsos, data], qsoMapData: qmData });
+  }
 
-    //console.log("QSOs data: ", ...qsos);
+  /**
+   * Remove from QSO list objects the QSO with index
+   * @param index {number} Array index of QSO to be removed
+   */
+  private _onRemoveQso = (index: number): void =>
+  {
+    const { configurationMap, qth, qsos } = this.state;
+    // Remove the QSO at the index
+    qsos.splice(index, 1);
+    // Update map data
+    let qmData: IQsoMapData = { MapConfig: configurationMap, QTH: qth, QSOs: qsos };
+    // Set new values in the state
+    this.setState({ qsos: qsos, qsoMapData: qmData });
   }
 }

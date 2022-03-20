@@ -59,12 +59,12 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
                 <Row className="mb-3">
                     <Col md>
                         <FloatingLabel controlId="latitudeMapForm" label="Latitude">
-                            <Form.Control type="number" value={Latitude} required min={minLatitude} max={maxLatitude} onChange={this._onChangeLatitude} />
+                            <Form.Control type="number" value={Latitude} required min={minLatitude} max={maxLatitude} onChange={this._onChangeLatitude} step={0.001} />
                         </FloatingLabel>
                     </Col>
                     <Col md>
                         <FloatingLabel controlId="longitudeMapForm" label="Longitude">
-                            <Form.Control type="number" value={Longitude} required min={minLongitude} max={maxLongitude} onChange={this._onChangeLongitude} />
+                            <Form.Control type="number" value={Longitude} required min={minLongitude} max={maxLongitude} onChange={this._onChangeLongitude} step={0.001} />
                         </FloatingLabel>
                     </Col>
                     <Col md>
@@ -208,11 +208,13 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
     {
         let center: LatLng = (this.state.objMap as Map).getCenter();
         let zoom: number = (this.state.objMap as Map).getZoom();
+        let lat: number = Number(center.lat.toFixed(3));
+        let lng: number = Number(center.lng.toFixed(3));
 
-        this.setState({ Latitude: center.lat, Longitude: center.lng, ZoomLevel: zoom });
+        this.setState({ Latitude: lat, Longitude: lng, ZoomLevel: zoom });
 
         // Update OnChange
-        let configuration: IMapConfig = { Latitude: center.lat, Longitude: center.lng, Zoom: zoom };
+        let configuration: IMapConfig = { Latitude: lat, Longitude: lng, Zoom: zoom };
         this.props.onChange(configuration);
     }
 
@@ -224,13 +226,16 @@ export class MapView extends React.Component<IMapViewProps, IMapViewState>
     private GetPosition = (position: GeolocationPosition): void =>
     {
         const { objMap } = this.state;
-        // Set the position returned
-        this.setState({ Latitude: position.coords.latitude, Longitude: position.coords.longitude, ZoomLevel: startZoom });
-        // Move Map at current position
-        (this.state.objMap as Map).flyTo([position.coords.latitude, position.coords.longitude], startZoom);
 
+        let roundedLat: number = Number(position.coords.latitude.toFixed(3));
+        let roundedLng: number = Number(position.coords.longitude.toFixed(3));
+
+        // Set the position returned
+        this.setState({ Latitude: roundedLat, Longitude: roundedLng, ZoomLevel: startZoom });
+        // Move Map at current position
+        (this.state.objMap as Map).flyTo([roundedLat, roundedLng], startZoom);
         // Update OnChange
-        let configuration: IMapConfig = { Latitude: position.coords.latitude, Longitude: position.coords.longitude, Zoom: startZoom };
+        let configuration: IMapConfig = { Latitude: roundedLat, Longitude: roundedLng, Zoom: startZoom };
         this.props.onChange(configuration);
     }
 }

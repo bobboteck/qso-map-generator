@@ -11,6 +11,8 @@ const maxLatitude: number = 90;
 const minLongitude: number = -180;
 const maxLongitude: number = 180;
 
+const { isValidLocatorString, locatorToLatLng, distance, bearingDistance, latLngToLocator } = require('qth-locator');
+
 export class QthForm extends React.Component<IQthFormProps, IQthFormState>
 {
     constructor(props: IQthFormProps)
@@ -34,7 +36,7 @@ export class QthForm extends React.Component<IQthFormProps, IQthFormState>
         const { Locator, Latitude, Longitude, Location, ReferenceCode, ReferenceType, References } = this.state;
 
         return(
-            <Form>
+            <Form id="qthForm">
                 <Row className="mb-3">
                     <h4>QTH information</h4>
                     <p>
@@ -44,20 +46,22 @@ Insert the information and position of your station during the activity
                 <Row className="mb-3">
                     <Col md="3">
                         <FloatingLabel controlId="ReferenceLocatorField" label="Locator">
-                            <Form.Control type="text" value={Locator} maxLength={6} onChange={this._onChanegLocator} />
+                            <Form.Control type="text" value={Locator} maxLength={6} onChange={this._onChanegLocator} isValid={false} pattern="/^[A-Ra-r][A-Ra-r]\d\d[A-Xa-x][A-Xa-x]/" />
                         </FloatingLabel>
                     </Col>
                     <Col md={1}>
-                        <Button variant="primary" type="button" className="centerButton">&#8644;</Button>
+                        <Button variant="outline-success" type="button" className="centerButton" onClick={this._onClickCalc} 
+                            //disabled={(Locator !== "" && Latitude !== undefined && Location !== undefined) || (Locator === "" && Latitude === undefined && Location === undefined)}
+                            >&#8644;</Button>
                     </Col>
                     <Col md={3}>
                         <FloatingLabel controlId="ReferenceLatitudeField" label="Latitude">
-                            <Form.Control type="number" value={Latitude} required min={minLatitude} max={maxLatitude} onChange={this._onChangeLatitude} />
+                            <Form.Control type="number" value={Latitude} required min={minLatitude} max={maxLatitude} step={0.001} onChange={this._onChangeLatitude} />
                         </FloatingLabel>
                     </Col>
                     <Col md={3}>
                         <FloatingLabel controlId="ReferenceLongitudeField" label="Longitude">
-                            <Form.Control type="number" value={Longitude} required min={minLongitude} max={maxLongitude} onChange={this._onChangeLongitude} />
+                            <Form.Control type="number" value={Longitude} required min={minLongitude} max={maxLongitude} step={0.001} onChange={this._onChangeLongitude} />
                         </FloatingLabel>
                     </Col>
                     <Col md={2}>
@@ -136,9 +140,57 @@ List of added Reference:
         let loc: string = e.target.value ? e.target.value : "";
         this.setState({ Locator: loc});
 
-        // Update OnChange
-        let qthData: IQthData = { Latitude: Latitude, Longitude: Longitude, Locator: loc, Location: Location, References: References, isPortable: true };
-        this.props.onChange(qthData);
+        // Update only if is present a valid Locator string
+        if(isValidLocatorString(loc))
+        {
+            // Update qthData without coordinate
+            let qthData: IQthData = { Locator: loc, Location: Location, References: References, isPortable: true };
+            // Check if Latitude is defined
+            if(Latitude !== undefined)
+            {
+                qthData.Latitude = Latitude;
+            }
+            // Check if Longitude is defined
+            if(Longitude !== undefined)
+            {
+                qthData.Longitude = Longitude;
+            }
+
+            // Update data in callback
+            this.props.onChange(qthData);
+        }
+    }
+
+    /**
+     * 
+     */
+    private _onClickCalc = (): void =>
+    {
+        const { Latitude, Longitude, Locator } = this.state;
+
+        if(Locator === "")
+        {
+            if(Latitude !== undefined && Longitude !== undefined)
+            {
+                this.setState({ Locator: latLngToLocator(Latitude, Longitude)});
+            }
+        }
+        else
+        {
+            if(Latitude === undefined && Longitude === undefined)
+            {
+                let coordinate: number[] = locatorToLatLng(Locator);
+                this.setState({ Latitude: Number(coordinate[0].toFixed(3)), Longitude: Number(coordinate[1].toFixed(3)) });
+            }
+        }
+
+        // TODO: Update qthData and fire onChange <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+/*
+console.log(locatorToLatLng('IO91wm')); // [51.521, -0.125]
+console.log(distance('IO91wm', 'KP20le')); // 1821.5 km
+console.log(bearingDistance('FN20qr', 'KP21ol')); // 6586.72 km, 49.16 degrees
+console.log(latLngToLocator(60.179, 24.945)); // KP21le
+*/
     }
 
     /**
@@ -149,7 +201,7 @@ List of added Reference:
     {
         const { Longitude, Locator, Location, References } = this.state;
 
-        let lat: number = e.target.value ? Number(e.target.value) : 0;
+        let lat: number | undefined = e.target.value ? Number(e.target.value) : undefined;
         this.setState({ Latitude: lat});
 
         // Update OnChange
@@ -165,7 +217,7 @@ List of added Reference:
     {
         const { Latitude, Locator, Location, References } = this.state;
         
-        let lng: number = e.target.value ? Number(e.target.value) : 0;
+        let lng: number | undefined = e.target.value ? Number(e.target.value) : undefined;
         this.setState({ Longitude: lng});
 
         // Update OnChange
@@ -178,12 +230,14 @@ List of added Reference:
      */
     private _onClickCurrentCenter = (): void =>
     {
-        const { Locator, Location, References } = this.state;
+        const { Location, References } = this.state;
 
-        this.setState({ Latitude: this.props.CenterLatitude, Longitude: this.props.CenterLongitude });
+        let locator: string = latLngToLocator(this.props.CenterLatitude, this.props.CenterLongitude);
+
+        this.setState({ Locator: locator, Latitude: this.props.CenterLatitude, Longitude: this.props.CenterLongitude });
 
         // Update OnChange
-        let qthData: IQthData = { Latitude: this.props.CenterLatitude, Longitude: this.props.CenterLongitude, Locator: Locator, Location: Location, References: References, isPortable: true };
+        let qthData: IQthData = { Latitude: this.props.CenterLatitude, Longitude: this.props.CenterLongitude, Locator: locator, Location: Location, References: References, isPortable: true };
         this.props.onChange(qthData);
     }
 

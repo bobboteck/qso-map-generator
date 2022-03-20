@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { IQsoFormProps } from './IQsoFormProps';
 import { IQsoFormState } from './IQsoFormState';
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { Button, Card, Col, Form, Row, Table } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { IQsoData } from '../../entities/IQsoData';
 
+const { isValidLocatorString, locatorToLatLng, distance, bearingDistance, latLngToLocator } = require('qth-locator');
 
 export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
 {
@@ -24,13 +25,14 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
             Band: "",
             Mode: "",
             Frequency: undefined,
-            validated: false
+            validated: false,
+            Qsos: []
         };
     }
 
     public render(): React.ReactElement<IQsoFormProps>
     {
-        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Band, Mode, Frequency, RstReceived, RstSent, TxPower, RxPower, Note, validated } = this.state;
+        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Band, Mode, Frequency, RstReceived, RstSent, TxPower, RxPower, Note, validated, Qsos } = this.state;
 
         return(
             <Form validated={validated} id="formQso" >
@@ -75,17 +77,26 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 </Row>
                 
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="4" controlId="locatorQso">
+                    <Form.Group as={Col} md="3" controlId="locatorQso">
                         <Form.Label>Locator *</Form.Label>
-                        <Form.Control type="text" className="input" value={Locator} onChange={this._onChangeLocator} required />
+                        <Form.Control type="text" maxLength={6} pattern="[A-Ra-r][A-Ra-r]\d\d[A-Xa-x][A-Xa-x]" required={true}
+                            className="input" value={Locator} onChange={this._onChangeLocator} />
+                    </Form.Group>
+                    <Form.Group as={Col} md="1" controlId="calcLocatoCoord">
+                        <Form.Label>&nbsp;</Form.Label>
+                        <Button variant="outline-success" type="button" 
+                            className="calcButtonQso" 
+                            onClick={this._onClickCalc} 
+                            //disabled={(Locator !== "" && Latitude !== undefined && Location !== undefined) || (Locator === "" && Latitude === undefined && Location === undefined)}
+                            >&#8644;</Button>
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="latitudeQso">
                         <Form.Label>Latitude *</Form.Label>
-                        <Form.Control type="number" className="input" value={Latitude} onChange={this._onChangeLatitude} required min="-90" max="90" />
+                        <Form.Control type="number" className="input" value={Latitude || ''} onChange={this._onChangeLatitude} required min="-90" max="90" step={0.001} />
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="longitudeQso">
                         <Form.Label>Longitude *</Form.Label>
-                        <Form.Control type="number" className="input" value={Longitude} onChange={this._onChangeLongitude} required min="-180" max="180" />
+                        <Form.Control type="number" className="input" value={Longitude || ''} onChange={this._onChangeLongitude} required min="-180" max="180" step={0.001} />
                     </Form.Group>
                 </Row>
 
@@ -104,7 +115,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                     </Form.Group>
                     <Form.Group as={Col} md="3" controlId="rxPowerQso">
                         <Form.Label>RX Power</Form.Label>
-                        <Form.Control type="number" className="input" value={RxPower} onChange={this._onChangeRxPower} />
+                        <Form.Control type="number" className="input" value={RxPower || ''} onChange={this._onChangeRxPower} />
                     </Form.Group>
                 </Row>
 
@@ -143,14 +154,38 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
         this.setState({ Locator: e.target.value ? e.target.value : "" });
     }
 
+    /**
+     * 
+     */
+    private _onClickCalc = (): void =>
+    {
+        const { Latitude, Longitude, Locator } = this.state;
+
+        if(Locator === "")
+        {
+            if(Latitude !== undefined && Longitude !== undefined)
+            {
+                this.setState({ Locator: latLngToLocator(Latitude, Longitude)});
+            }
+        }
+        else
+        {
+            if(Latitude === undefined && Longitude === undefined)
+            {
+                let coordinate: number[] = locatorToLatLng(Locator);
+                this.setState({ Latitude: Number(coordinate[0].toFixed(3)), Longitude: Number(coordinate[1].toFixed(3)) });
+            }
+        }
+    }
+
     private _onChangeLatitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        this.setState({ Latitude: e.target.value ? Number(e.target.value) : 0 });
+        this.setState({ Latitude: e.target.value ? Number(e.target.value) : undefined });
     }
 
     private _onChangeLongitude = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        this.setState({ Longitude: e.target.value ? Number(e.target.value) : 0 });
+        this.setState({ Longitude: e.target.value ? Number(e.target.value) : undefined });
     }
 
     private _onChangeFrequency = (e: React.ChangeEvent<HTMLInputElement>): void => 
@@ -210,6 +245,9 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
         }
         else
         {
+            // Calculate the QRB with the locator (TODO: I'm not sure if the rounding of "toFixed" is valid for calculate de distance)
+            let calculatedQrb: number = this.props.qthLocator ? Number(bearingDistance(this.props.qthLocator, Locator).km.toFixed(0)) : 0;
+
             let data: IQsoData = 
             {
                 Date: DateQso,
@@ -218,7 +256,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 Locator: Locator,
                 Latitude: Latitude? Latitude : 0,
                 Longitude: Longitude? Longitude: 0,
-                QRB: 0,                 /* TODO: Need to be calculated */
+                QRB: calculatedQrb,
                 Band: Band,
                 Mode: Mode,
                 Frequency: Frequency,
