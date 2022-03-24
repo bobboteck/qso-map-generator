@@ -2,14 +2,39 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Web application to generate JSON data file to show map of QSOs in a Web page"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta name="author" content="Roberto D'Amico, Bobboteck, IU0PHY">
+    <meta property="article:author" content="Roberto D'Amico, Bobboteck, IU0PHY">
+    <meta property="og:type" content="application">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="Bobboteck">
+    <meta property="og:title" content="QSO Map generator">
+    <meta property="og:url" content="https://bobboteck.github.io/app/qso-map-generator/index.html">
+    <meta property="og:description" content="Web application to generate JSON data file to show map of QSOs in a Web page">
+    <link rel="canonical" href="https://bobboteck.github.io/app/qso-map-generator/index.html">
+
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@type": "Person",
+"name": "Roberto D'Amico",
+"url": "https://bobboteck.github.io/"
+}
+</script>
+
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon/android-chrome-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/icon/apple-touch-icon.png">
+    <link rel="icon" href="%PUBLIC_URL%/icon/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/icon/favicon-16x16.png">
+    <link rel="manifest" href="%PUBLIC_URL%/icon/site.webmanifest">
+    <link rel="mask-icon" href="%PUBLIC_URL%/icon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-config" content="%PUBLIC_URL%/icon/browserconfig.xml">
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -25,7 +50,7 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <title>React App</title>
+    <title>QSO Map generator</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -40,5 +65,16 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+
+    <script>
+      window._gaq = window._gaq || [];    
+      _gaq.push(['_setAccount', 'UA-98811481-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </body>
 </html>
