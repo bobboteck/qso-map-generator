@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { IQsoFormProps } from './IQsoFormProps';
 import { IQsoFormState } from './IQsoFormState';
-import { Button, Card, Col, Form, Row, Table } from 'react-bootstrap';
+import { Button, Col, Form, FormControl, InputGroup, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { IQsoData } from '../../entities/IQsoData';
 
-const { isValidLocatorString, locatorToLatLng, distance, bearingDistance, latLngToLocator } = require('qth-locator');
+const { locatorToLatLng, bearingDistance, latLngToLocator } = require('qth-locator');
 
 export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
 {
@@ -32,7 +32,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
 
     public render(): React.ReactElement<IQsoFormProps>
     {
-        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Band, Mode, Frequency, RstReceived, RstSent, TxPower, RxPower, Note, validated, Qsos } = this.state;
+        const { DateQso, TimeQso, Callsign, Locator, Latitude, Longitude, Frequency, RstReceived, RstSent, TxPower, RxPower, Note, validated } = this.state;
 
         return(
             <Form validated={validated} id="formQso" >
@@ -56,22 +56,45 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                         <Form.Label>Band</Form.Label>
                         <Form.Select aria-label="Band used in QSO" onChange={this._onChangeBand}>
                             <option></option>
-                            <option value="6m">6 m</option>
-                            <option value="2m">2 m</option>
-                            <option value="70cm">70 cm</option>
+                            <option value="160">160 m</option>
+                            <option value="80">80 m</option>
+                            <option value="60">60 m</option>
+                            <option value="40">40 m</option>
+                            <option value="30">30 m</option>
+                            <option value="20">20 m</option>
+                            <option value="17">17 m</option>
+                            <option value="15">15 m</option>
+                            <option value="12">12 m</option>
+                            <option value="10">10 m</option>
+                            <option value="8">8 m</option>
+                            <option value="6">6 m</option>
+                            <option value="2">2 m</option>
+                            <option value="1.25">1.25 m</option>
+                            <option value="0.70">70 cm</option>
+                            <option value="0.33">33 cm</option>
+                            <option value="0.23">23 cm</option>
+                            <option value="0.13">13 cm</option>
+                            <option value="0.09">9 cm</option>
+                            <option value="0.06">6 cm</option>
+                            <option value="0.03">3 cm</option>
                         </Form.Select>
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="frequencyQso">
                         <Form.Label>Frequency</Form.Label>
-                        <Form.Control type="number" className="input" value={Frequency} onChange={this._onChangeFrequency} placeholder="" />
+                        <InputGroup>
+                            <FormControl type="number" placeholder="" aria-label="Frequency" aria-describedby="basic-addon2" value={Frequency} onChange={this._onChangeFrequency} />
+                            <InputGroup.Text id="basic-addon2">KHz</InputGroup.Text>
+                        </InputGroup>
                     </Form.Group>
                     <Form.Group as={Col} md="4" controlId="modeQso">
                         <Form.Label>Mode</Form.Label>
                         <Form.Select aria-label="Mode used in QSO" onChange={this._onChangeMode}>
                             <option></option>
-                            <option value="FM">FM</option>
-                            <option value="SSB">SSB</option>
+                            <option value="AM">AM</option>
                             <option value="CW">CW</option>
+                            <option value="FM">FM</option>
+                            <option value="FT8">FT8</option>
+                            <option value="SSB">SSB</option>
                         </Form.Select>
                     </Form.Group>
                 </Row>

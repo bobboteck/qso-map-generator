@@ -6,7 +6,7 @@ import { IQthData } from '../../entities/IQthData';
 import { IQthMarkerProps } from './IQthMarkerProps';
 import { IQthMarkerState } from './IQthMarkerState';
 
-const qthIcon = new L.Icon({ iconUrl: 'qso-map-generator/map-station.png', iconSize: [41,41], iconAnchor: [20,40], popupAnchor: [0,-30] });
+const qthIcon = new L.Icon({ iconUrl: '/app/qso-map-generator/map-station.png', iconSize: [41,41], iconAnchor: [20,40], popupAnchor: [0,-30] });
 
 export class QthMarker extends React.Component<IQthMarkerProps, IQthMarkerState>
 {
