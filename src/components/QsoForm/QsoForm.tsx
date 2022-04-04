@@ -126,11 +126,13 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 <Row className="mb-3">
                     <Form.Group as={Col} md="3" controlId="rstrQso">
                         <Form.Label>RST received</Form.Label>
-                        <Form.Control type="number" className="input" value={RstReceived} onChange={this._onChangeRstReceived} />
+                        <Form.Control type="text" maxLength={3} pattern="[0-5][0-9]{1,2}"
+                            className="input" value={RstReceived} onChange={this._onChangeRstReceived} />
                     </Form.Group>
                     <Form.Group as={Col} md="3" controlId="rstsQso">
                         <Form.Label>RST sent</Form.Label>
-                        <Form.Control type="number" className="input" value={RstSent} onChange={this._onChangeRstSent} />
+                        <Form.Control type="text"  maxLength={3} pattern="[0-5]([0-9]{1,2})"
+                            className="input" value={RstSent} onChange={this._onChangeRstSent} />
                     </Form.Group>
                     <Form.Group as={Col} md="3" controlId="txPowerQso">
                         <Form.Label>TX power</Form.Label>
