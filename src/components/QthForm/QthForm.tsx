@@ -46,7 +46,7 @@ Insert the information and position of your station during the activity
                 <Row className="mb-3">
                     <Col md="3">
                         <FloatingLabel controlId="ReferenceLocatorField" label="Locator">
-                            <Form.Control type="text" value={Locator} maxLength={6} onChange={this._onChanegLocator} isValid={false} pattern="/^[A-Ra-r][A-Ra-r]\d\d[A-Xa-x][A-Xa-x]/" />
+                            <Form.Control type="text" value={Locator} maxLength={6} onChange={this._onChanegLocator} isValid={false} pattern="[A-Ra-r][A-Ra-r]\d\d[A-Xa-x][A-Xa-x]" />
                         </FloatingLabel>
                     </Col>
                     <Col md={1}>
@@ -140,24 +140,40 @@ List of added Reference:
         let loc: string = e.target.value ? e.target.value : "";
         this.setState({ Locator: loc});
 
-        // Update only if is present a valid Locator string
-        if(isValidLocatorString(loc))
+        if(loc !== "")
         {
-            // Update qthData without coordinate
-            let qthData: IQthData = { Locator: loc, Location: Location, References: References, isPortable: true };
-            // Check if Latitude is defined
-            if(Latitude !== undefined)
+            // Update only if is present a valid Locator string
+            if(isValidLocatorString(loc))
             {
-                qthData.Latitude = Latitude;
-            }
-            // Check if Longitude is defined
-            if(Longitude !== undefined)
-            {
-                qthData.Longitude = Longitude;
-            }
+                // Update qthData without coordinate
+                let qthData: IQthData = { Locator: loc, Location: Location, References: References, isPortable: true };
+                // Check if Latitude is defined
+                if(Latitude !== undefined)
+                {
+                    qthData.Latitude = Latitude;
+                }
+                // Check if Longitude is defined
+                if(Longitude !== undefined)
+                {
+                    qthData.Longitude = Longitude;
+                }
 
-            // Update data in callback
-            this.props.onChange(qthData);
+                // Update data in callback
+                this.props.onChange(qthData);
+
+                // Remove class to not show invalid border for field
+                e.target.classList.remove("invalidField");
+            }
+            else
+            {
+                // Add class to show invalid border for field
+                e.target.classList.add("invalidField");
+            }
+        }
+        else
+        {
+            // If the field is empty remove class to not show invalid border for field
+            e.target.classList.remove("invalidField");
         }
     }
 
