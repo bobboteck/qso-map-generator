@@ -11,7 +11,7 @@ const maxLatitude: number = 90;
 const minLongitude: number = -180;
 const maxLongitude: number = 180;
 
-const { isValidLocatorString, locatorToLatLng, distance, bearingDistance, latLngToLocator } = require('qth-locator');
+const { isValidLocatorString, locatorToLatLng, latLngToLocator } = require('qth-locator');
 
 export class QthForm extends React.Component<IQthFormProps, IQthFormState>
 {
@@ -265,11 +265,13 @@ console.log(latLngToLocator(60.179, 24.945)); // KP21le
     {
         const { Latitude, Longitude, Locator, References } = this.state;
 
-        let loc: string = e.target.value ? e.target.value : "";
-        this.setState({ Location: loc });
+        let location: string = e.target.value ? e.target.value : "";
+        location = location.replace(/[^\w\s]/gi, '');
+        //location = location.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{}[]\\\/]/gi, '');
+        this.setState({ Location: location });
 
         // Update OnChange
-        let qthData: IQthData = { Latitude: Latitude, Longitude: Longitude, Locator: Locator, Location: loc, References: References, isPortable: true };
+        let qthData: IQthData = { Latitude: Latitude, Longitude: Longitude, Locator: Locator, Location: location, References: References, isPortable: true };
         this.props.onChange(qthData);
     }
 
@@ -279,7 +281,11 @@ console.log(latLngToLocator(60.179, 24.945)); // KP21le
      */
     private _onChangeReferenceCode = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        this.setState({ ReferenceCode: e.target.value ? e.target.value : "" });
+        let referenceCode: string = e.target.value ? e.target.value : "";
+
+        referenceCode = referenceCode.replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\]/gi, '');
+
+        this.setState({ ReferenceCode: referenceCode });
     }
 
     /**

@@ -147,7 +147,7 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
                 <Row className="mb-3">
                     <Form.Group as={Col} md="10" controlId="noteQso">
                         <Form.Label>Note</Form.Label>
-                        <Form.Control type="text" className="input" value={Note} onChange={this._onChangeNote} />
+                        <Form.Control type="text" className="input" value={Note} onChange={this._onChangeNote} pattern="^(?!.*[.,:;!|\\\/\[\]\{\}\(\)']).*" />
                     </Form.Group>
                     <Form.Group as={Col} md="2" controlId="addQso">
                         <Form.Label>&nbsp;</Form.Label>
@@ -250,7 +250,11 @@ export class QsoForm extends React.Component<IQsoFormProps, IQsoFormState>
 
     private _onChangeNote = (e: React.ChangeEvent<HTMLInputElement>): void => 
     {
-        this.setState({ Note: e.target.value ? e.target.value : "" });
+        let localNote: string = e.target.value ? e.target.value : "";
+
+        localNote = localNote.replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\]/gi, '');
+
+        this.setState({ Note: localNote });
     }
 
 
