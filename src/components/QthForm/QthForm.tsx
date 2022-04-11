@@ -267,7 +267,7 @@ console.log(latLngToLocator(60.179, 24.945)); // KP21le
 
         let location: string = e.target.value ? e.target.value : "";
         location = location.replace(/[^\w\s]/gi, '');
-        //location = location.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{}[]\\\/]/gi, '');
+        //location = location.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
         this.setState({ Location: location });
 
         // Update OnChange

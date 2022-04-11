@@ -6,6 +6,7 @@ import { MapView } from './components/MapView/MapView';
 import { QsoForm } from './components/QsoForm/QsoForm';
 import { QsoList } from './components/QsoList/QsoList';
 import { QthForm } from './components/QthForm/QthForm';
+import { RadioForm } from './components/RadioForm/RadioForm';
 import { IMapConfig } from './entities/IMapConfig';
 import { IQsoData } from './entities/IQsoData';
 import { IQsoMapData } from './entities/IQsoMapData';
@@ -57,7 +58,14 @@ export class App extends React.Component<IAppProps, IAppState>
             <QthForm CenterLatitude={configurationMap.Latitude} CenterLongitude={configurationMap.Longitude} onChange={this._onChangeQth} />
           </Tab>
           <Tab eventKey="equipment" title="Equipment">
-            <p>The equipment section has not yet been implemented</p>
+            <Row>
+              <Col>
+                <RadioForm />
+              </Col>
+              <Col>
+                Antennas
+              </Col>
+            </Row>
           </Tab>
           <Tab eventKey="qso" title="QSO">
             <Row>
