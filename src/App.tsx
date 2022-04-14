@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import './App.css';
+import { AntennaForm } from './components/AntennaForm/AntennaForm';
 import { ExportData } from './components/ExportData/ExportData';
 import { MapView } from './components/MapView/MapView';
 import { QsoForm } from './components/QsoForm/QsoForm';
@@ -63,7 +64,7 @@ export class App extends React.Component<IAppProps, IAppState>
                 <RadioForm />
               </Col>
               <Col>
-                Antennas
+                <AntennaForm />
               </Col>
             </Row>
           </Tab>
