@@ -1,3 +1,5 @@
+import { IRadioData } from "../../entities/IRadioData";
+
 export interface IRadioFormState
 {
     Brand: string;
@@ -5,4 +7,6 @@ export interface IRadioFormState
     PowerSupply: string;
 
     FormValidated: boolean;
+
+    Radios: IRadioData[];
 }
