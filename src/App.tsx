@@ -8,10 +8,13 @@ import { QsoForm } from './components/QsoForm/QsoForm';
 import { QsoList } from './components/QsoList/QsoList';
 import { QthForm } from './components/QthForm/QthForm';
 import { RadioForm } from './components/RadioForm/RadioForm';
+import { IAntennaData } from './entities/IAntennaData';
+import { IEquipmentData } from './entities/IEquipmentData';
 import { IMapConfig } from './entities/IMapConfig';
 import { IQsoData } from './entities/IQsoData';
 import { IQsoMapData } from './entities/IQsoMapData';
 import { IQthData } from './entities/IQthData';
+import { IRadioData } from './entities/IRadioData';
 
 export interface IAppProps
 {
@@ -22,6 +25,8 @@ export interface IAppState
 {
   configurationMap: IMapConfig;
   qth?: IQthData;
+  radio?: IRadioData[];
+  antenna?: IAntennaData[];
   qsos: IQsoData[];
 
   qsoMapData?: IQsoMapData;
@@ -61,10 +66,10 @@ export class App extends React.Component<IAppProps, IAppState>
           <Tab eventKey="equipment" title="Equipment">
             <Row>
               <Col>
-                <RadioForm />
+                <RadioForm onChange={this._onChangeRadio} />
               </Col>
               <Col>
-                <AntennaForm />
+                <AntennaForm onChange={this._onChangeAntenna} />
               </Col>
             </Row>
           </Tab>
@@ -136,6 +141,93 @@ The following packages have been used in this application:
 
     this.setState({ qth: data, qsoMapData: qmData });
   }
+
+
+  private _onChangeRadio = (data: IRadioData[]) : void =>
+  {
+    const { configurationMap, qth, qsos, antenna } = this.state;
+    
+    // Define equipment object
+    let equipment: IEquipmentData = {};
+    // Check if data is present otherwise remove object
+    if(data.length > 0)
+    {
+      // Check if is present antennas data in the state, to insert it in a new equipment object
+      if(antenna !== undefined && antenna?.length > 0)
+      {
+        equipment = { Radios: data, Antennas: antenna };
+      }
+      else
+      {
+        equipment = { Radios: data };
+      }
+      // Create new Qso Map Data object
+      let qmData: IQsoMapData = { MapConfig: configurationMap, QTH: qth, Equipment: equipment, QSOs: qsos };
+
+      this.setState({qsoMapData: qmData, radio: data });
+    }
+    else
+    {
+      let qmData: IQsoMapData;
+      // Check if is present antennas data in the state, to insert only it in a new equipment object
+      if(antenna !== undefined && antenna?.length > 0)
+      {
+        equipment = { Radios: undefined, Antennas: antenna };
+        qmData = { MapConfig: configurationMap, QTH: qth, Equipment: equipment, QSOs: qsos };
+      }
+      else
+      {
+        qmData = { MapConfig: configurationMap, QTH: qth, Equipment: undefined, QSOs: qsos };
+      }
+
+      this.setState({qsoMapData: qmData, radio: undefined });
+    }
+  }
+
+
+  private _onChangeAntenna = (data: IAntennaData[]) : void =>
+  {
+    const { configurationMap, qth, qsos, radio } = this.state;
+    
+    // Define equipment object
+    let equipment: IEquipmentData = {};
+    // Check if data is present otherwise remove object
+    if(data.length > 0)
+    {
+      // Check if is present antennas data in the state, to insert it in a new equipment object
+      if(radio !== undefined && radio?.length > 0)
+      {
+        equipment = { Radios: radio, Antennas: data };
+      }
+      else
+      {
+        equipment = { Antennas: data };
+      }
+      // Create new Qso Map Data object
+      let qmData: IQsoMapData = { MapConfig: configurationMap, QTH: qth, Equipment: equipment, QSOs: qsos };
+
+      this.setState({qsoMapData: qmData, antenna: data });
+    }
+    else
+    {
+      let qmData: IQsoMapData;
+      // Check if is present radio data in the state, to insert only it in a new equipment object
+      if(radio !== undefined && radio?.length > 0)
+      {
+        equipment = { Radios: radio };
+        // set new Qso Map Data values
+        qmData = { MapConfig: configurationMap, QTH: qth, Equipment: equipment, QSOs: qsos };
+      }
+      else
+      {
+        // set new Qso Map Data values
+        qmData = { MapConfig: configurationMap, QTH: qth, Equipment: undefined, QSOs: qsos };
+      }
+
+      this.setState({qsoMapData: qmData, antenna: undefined });
+    }
+  }
+
 
 
   private _onAddQso = (data: IQsoData): void =>

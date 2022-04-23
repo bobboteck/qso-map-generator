@@ -1,5 +1,8 @@
+import { IAntennaData } from "./IAntennaData";
+import { IRadioData } from "./IRadioData";
+
 export interface IEquipmentData
 {
-    Radio: string;
-    Antennas: string;
+    Radios?: IRadioData[];
+    Antennas?: IAntennaData[];
 }
